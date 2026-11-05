@@ -20,8 +20,9 @@ LAB_WH = "DEMO_WH"
 LAB_DB = "DEMO_DB"
 KIT_NAME = "tricon-coco-lab"
 ORIGINAL_APP = "https://coco-hol-tricon-de-gejm3sg47ufychnq9jpkqg.streamlit.app/"
+DBT_VERSION = "1.12.3"
 GUIDE_URL = "https://www.snowflake.com/en/developers/guides/data-engineering-with-coco/"
-MIN_COCO_NOTE = "the latest CoCo Desktop (Help → Check for Updates)"
+MIN_COCO_NOTE = "CoCo Desktop 1.21.3 or later (Help → Check for Updates)"
 
 INITIALS_PLACEHOLDER = "<INITIALS>"
 PERSISTED_KEYS = ("initials",)
@@ -154,8 +155,9 @@ def render_build_click(what: str = "Build"):
     """The one dbt action people do by hand: dbt runs in Snowflake, started from the Project Action Bar."""
     with st.container(border=True):
         st.markdown(f"""##### :material/play_circle: You click: **{what}** on the Project Action Bar
-At the **bottom** of the CoCo Desktop window: project **tricon_coco_lab**, profile **dev**, operation **{what}** → click it.
+At the **bottom** of the CoCo Desktop window: project **tricon_coco_lab**, profile **dev**, operation **{what}**, and in the run options **dbt Version {DBT_VERSION}** → click it.
 dbt runs **inside Snowflake**; nothing runs on your laptop. It takes about a minute, then the **Lineage** view opens.""")
+        st.caption(f"Always pick dbt **{DBT_VERSION}**. The older 1.9 rejects the guide's test syntax, and 2.0 fails with this lab's profile.")
 
 
 def render_expected(text: str):

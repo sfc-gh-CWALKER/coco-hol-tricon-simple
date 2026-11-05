@@ -32,9 +32,10 @@ Right now your plugin lives in your lab folder. The **Plugins Catalog** is Snowf
 - **No credentials**: people install straight from Snowflake, no GitHub access needed
 - **Versioning**: every publish is a new version; teammates sync to get the latest
 
-Publishing creates a `CORTEX EXTENSION` object in your **personal database**:
-`USER$<YOUR_USERNAME>.SKILL_SHARING.COCO_DE_GUIDE`, with a share link like
-`snow://skill_catalog/USER$<YOUR_USERNAME>.SKILL_SHARING.COCO_DE_GUIDE/versions/version$1/`
+Publishing creates a `CORTEX EXTENSION` object in your **personal database**. At Tricon, usernames are email addresses, so the database name has an `@` in it and needs double quotes:
+`"USER$KTE@TRICONHOMES.COM".SKILL_SHARING.COCO_DE_GUIDE` (yours uses your email), with a share link like
+`snow://skill_catalog/"USER$KTE@TRICONHOMES.COM".SKILL_SHARING.COCO_DE_GUIDE/versions/version$1/`
+Copy the link CoCo gives you exactly, quotes included. Email-style links need **CoCo Desktop 1.21.3 or later**.
 """)
 render_whats_happening("One button turns your folder into a governed Snowflake object. A chat opens and a built-in skill does the work; you just confirm.")
 with st.container(border=True):
@@ -44,7 +45,7 @@ with st.container(border=True):
 3. A chat opens and the `share-skill-and-plugin` skill runs. Confirm the **name** and **description**.
 4. When it asks about visibility, keep the default: **not discoverable**, reachable only by people you give the link to.
 """)
-render_expected("CoCo reports a **share URI** starting with `snow://skill_catalog/USER$...SKILL_SHARING.COCO_DE_GUIDE/versions/version$1/`. Copy it somewhere.")
+render_expected("CoCo reports a **share URI** like `snow://skill_catalog/\"USER$<you>@TRICONHOMES.COM\".SKILL_SHARING.COCO_DE_GUIDE/versions/version$1/`. Copy it exactly, quotes included.")
 
 render_prompt("Prompt 4.1", "How Would a Teammate Install It?", """Show me the share URI of the coco-de-guide plugin I just published, and explain in three steps how a teammate installs it from the Plugins Catalog. Don't change anything.""")
 render_explanation("Installing a catalog plugin (the teammate's side)", """
@@ -54,7 +55,7 @@ render_explanation("Installing a catalog plugin (the teammate's side)", """
 """)
 render_troubleshoot([
     ("*Insufficient privileges* / can't create SKILL_SHARING", "Your account may restrict publishing. Skip to Part B; the facilitator shows the publish flow."),
-    ("No Publish button on the card", "Update CoCo Desktop (Help → Check for Updates)."),
+    ("No Publish button on the card, or the link with `@` in it doesn't import", "Update CoCo Desktop to **1.21.3 or later** (Help → Check for Updates)."),
     ("CoCo asks to make it public to everyone", "Say no for the lab. Keep it reachable by link only."),
 ])
 

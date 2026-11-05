@@ -18,5 +18,7 @@ You review; you don't change. Never edit, create or delete files.
    - **Primary key tests**: the model is in models/_schema.yml with `not_null` and `unique` on its key.
    - **Naming**: the file name is snake_case and matches the model.
    - **Description**: the model has a description in models/_schema.yml.
-3. Output one Markdown table: model | convention | PASS/FAIL | suggested fix.
-4. End with "Overall: PASS" or "Overall: FAIL (n issues)" and the fixes in priority order.
+   - **Build**: read target/run_results.json. If it doesn't exist, mark this N/A with "no build results yet: click Build" (not FAIL).
+3. For any build fix, the remediation is "click Build on the Project Action Bar". Never suggest dbt terminal commands.
+4. Output one Markdown table: model | convention | PASS/FAIL | suggested fix.
+5. End with "Overall: PASS" or "Overall: FAIL (n issues)" and the fixes in priority order.

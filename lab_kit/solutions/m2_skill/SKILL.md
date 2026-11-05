@@ -12,4 +12,4 @@ description: Create a new dbt model in this project. Use when adding a model for
 1. Confirm which source table(s) to model — ask if not specified.
 2. Write the model SQL in `models/<model_name>.sql` using `{{ source('<source>', '<table>') }}` references.
 3. Add the model entry to `models/_schema.yml` with a description and tests for the primary key.
-4. Ask me to run Build on the Project Action Bar, then read `target/run_results.json` and report the result.
+4. Ask me to click Build on the Project Action Bar (dbt 1.12.3), then read `target/run_results.json` and report the result. If it's missing, say the build didn't finish and ask me to click Build again.

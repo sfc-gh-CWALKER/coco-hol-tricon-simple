@@ -52,7 +52,7 @@ render_new_chat()
 
 # ---------------------------------------------------------------- Step 1
 st.markdown("#### Step 1: Add schema tests, without any skill")
-render_guide_ref("Using CoCo Without a Skill → Add Schema Tests Without Any Skill", "the file lives at models/_schema.yml, and the last line changes: dbt in Snowflake is version 1.9, which doesn't accept the guide's arguments: key")
+render_guide_ref("Using CoCo Without a Skill → Add Schema Tests Without Any Skill", "the file lives at models/_schema.yml (no dbt/ folder)")
 render_whats_happening("""Tests are rules the data must pass every time it builds, for example *every order key is unique* or *no customer is missing*.
 You're not telling CoCo which columns are keys or how dbt tests work. This step shows how much it **already knows** before you write any skill.""")
 
@@ -60,7 +60,7 @@ PROMPT_2_1 = """Add schema tests to the existing models in this project.
 Save the results in models/_schema.yml.
 At a minimum, each model's primary key should have not_null and unique tests.
 Add any other tests that make sense given the columns in each model.
-This project's dbt runs inside Snowflake on dbt 1.9, so put test parameters like values: directly under the test name (no arguments: key)."""
+For parameterized tests like accepted_values, nest all test parameters under an arguments: key."""
 render_prompt("Prompt 2.1", "Add Schema Tests (No Skill)", PROMPT_2_1)
 render_expected("A new `models/_schema.yml` with `not_null` and `unique` on `customer_key` and `order_key`, plus a few more tests. Click **Keep**.")
 render_build_click("Build")
@@ -68,7 +68,8 @@ render_expected("**Success**, with every test passing (roughly 10 or more, depen
 
 render_troubleshoot([
     ("A test on `order_status` fails", "TPC-H order statuses are **F, O, P**. Ask: *Fix the accepted_values for order_status to match the data.* The guide notes this: not every column that looks like a rule actually holds in TPC-H."),
-    ("*takes no keyword argument 'arguments'*", "dbt in Snowflake is 1.9 and doesn't accept the `arguments:` key. Ask: *Remove the arguments: wrapper from every test in _schema.yml and put the parameters directly under the test.* Then Build again."),
+    ("*takes no keyword argument 'arguments'*", "The Build ran on dbt **1.9**. Set **dbt Version 1.12.3** in the Build run options and click Build again. Don't change the file."),
+    ("*dbt1308 ... account is empty* or *dbt1159*", "The Build ran on dbt **2.0**. Set **dbt Version 1.12.3** and click Build again."),
     ("Build says 0 tests", "The file must be `models/_schema.yml`. Ask CoCo to move it there, then Build again."),
 ])
 
@@ -98,7 +99,7 @@ The skill should have exactly two sections:
 1. Confirm which source table(s) to model — ask if not specified
 2. Write the model SQL using source() references
 3. Add the model entry to _schema.yml with a description and primary key tests
-4. Ask me to click Build on the Project Action Bar, then read target/run_results.json and report the result
+4. Ask me to click Build on the Project Action Bar, then read target/run_results.json and report the result (if it's missing, ask me to click Build again)
 
 Use the name new-dbt-model. Write a one-sentence description that tells CoCo when
 to invoke this skill. Keep the skill concise — no sub-steps, no examples, no error

@@ -62,13 +62,9 @@ render_expected(f"`{PLUGIN_DIR}/skills/new-dbt-model/SKILL.md` exists, and `.sno
 
 # ---------------------------------------------------------------- Step 2
 st.markdown("#### Step 2: Create the plugin manifest")
-render_guide_ref("Create a Custom Plugin → Create the Plugin Manifest")
-render_whats_happening("`plugin.json` is the plugin's label: its name, version, and where to find its skills, agents and hooks. Asking CoCo to read the docs first means it uses the current format.")
-render_prompt("Prompt 3.2", "Create the Manifest", f"""Consult the CoCo Desktop plugin
-documentation at https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code-desktop/plugins
-for the correct plugin.json schema and file structure.
-
-Create a CoCo plugin manifest for this project at {PLUGIN_DIR}/.cortex-plugin/plugin.json.
+render_guide_ref("Create a Custom Plugin → Create the Plugin Manifest", "no 'consult the docs' line: the docs page doesn't list every field, so the prompt gives the exact manifest")
+render_whats_happening("`plugin.json` is the plugin's label: its name, version, and where to find its skills, agents and hooks.")
+render_prompt("Prompt 3.2", "Create the Manifest", f"""Create a CoCo plugin manifest for this project at {PLUGIN_DIR}/.cortex-plugin/plugin.json.
 The manifest must include all of the following fields:
 - name: "coco-de-guide"
 - version: 1.0.0
@@ -76,6 +72,7 @@ The manifest must include all of the following fields:
 - skills: pointing to ./skills
 - agents: pointing to ./agents
 - hooks: pointing to ./hooks/hooks.json
+Use exactly these fields, with these values.
 
 Also create {PLUGIN_DIR}/.cortex-plugin/activation.md that briefly explains
 what the plugin includes.
@@ -133,9 +130,10 @@ for the correct agent definition format and frontmatter schema.
 Create a dbt-review subagent at {PLUGIN_DIR}/agents/dbt-review.md.
 The subagent should:
 - Review every dbt model file in models/
-- Read target/run_results.json to see whether the last build and its tests passed
+- Read target/run_results.json to see whether the last build and its tests passed. If the file doesn't exist, report that check as N/A: "no build results yet: click Build", not FAIL
 - Verify that each convention from the new-dbt-model skill is met
 - Produce a concise PASS/FAIL report per convention with specific remediation steps for any failures
+- For build fixes, the remediation is "click Build on the Project Action Bar"; never suggest dbt terminal commands
 - Never edit files
 
 It should use only the read, grep, and glob tools. Set the model to auto.""")
@@ -154,19 +152,25 @@ st.caption("Project plugins only switch on in a **trusted** folder. If it shows 
 
 # ---------------------------------------------------------------- Step 6
 st.markdown("#### Step 6: Test the hook")
-render_guide_ref("Create a Custom Plugin → Test the Hook")
-render_whats_happening("You deliberately ask for something dangerous. Type it in the **chat**, not a terminal. The hook should stop CoCo before the command runs.")
-render_prompt("Prompt 3.5", "Try to Deploy to Production", "Run dbt build --target prod")
+render_guide_ref("Create a Custom Plugin → Test the Hook", "facilitator demo: on most Tricon laptops the hook can't run, so watch the screen")
+render_whats_happening("The facilitator deliberately asks CoCo for something dangerous. The hook should stop CoCo **before** the command runs.")
+st.warning(""":material/cast: **Watch the facilitator's screen for this step.** On a typical Tricon Windows laptop the hook can't start: `bash` isn't on CoCo's PATH. A hook that can't start is only logged, not blocking. It **fails open**. And because this lab has no local dbt, a real attempt would just say *dbt is not recognized*, which doesn't look like a guardrail either.
+That's the lesson: **guardrails need testing on the machines that will run them.**""")
+render_prompt("Prompt 3.5", "Try to Deploy to Production (facilitator)", "Run dbt build --target prod")
 render_expected("CoCo is **blocked** with a message that direct production dbt runs aren't allowed and to use CI/CD.")
 render_guardrail("Even with clear instructions, agents generate actions on the fly. Hooks are the hard guardrail that holds no matter what the agent decides.")
-st.caption("Windows: the hook runs with `bash`. If your laptop doesn't have it, CoCo may report a hook error instead of the block message. Watch the facilitator's screen for this one step.")
+render_explanation("Two limits of this hook (good discussion points)", """
+- **It only blocks what it matches.** It catches `--target prod` and `--target=prod`, and the short flag `-t prod`. Every pattern you forget is a gap, so test guardrails like code.
+- **Its path is relative to this project.** `hooks.json` runs `bash .cortex/plugins/coco-de-guide/hooks/validate-bash.sh`, which only resolves inside the lab folder. When a teammate installs the plugin from the Catalog (Module 4), it lives in their user plugin folder, so the script isn't found and the hook fails open. The CoCo docs don't document a plugin-root path variable, so for now **hooks are reliable only for plugins used from the project folder.**
+""")
+st.caption("The script itself is tested: run directly with bash, it blocks all three prod forms and allows `--target dev`.")
 
 # ---------------------------------------------------------------- Step 7
 st.markdown("#### Step 7: Try the subagent")
 render_guide_ref("Create a Custom Plugin → Try the Subagent Locally")
 render_whats_happening("The reviewer runs to completion by itself: it reads each model, checks the three conventions, reads the last build results, and gives you a PASS/FAIL table.")
 render_prompt("Prompt 3.6", "Run the Review", "Use the dbt-review agent to review the models in this project.")
-render_expected("A table per model (`customers`, `orders_summary`, `supplier_performance`) ending in an overall **PASS**, or specific fixes for anything that breaks a convention.")
+render_expected("A table per model (`customers`, `orders_summary`, `supplier_performance`) ending in an overall **PASS**, or specific fixes for anything that breaks a convention. If you haven't built since catching up, the build check shows **N/A: click Build**. Click Build and run the review again.")
 
 render_troubleshoot([
     ("coco-de-guide isn't in Settings → Plugins", "Click **↻**. Check `" + PLUGIN_DIR + "/.cortex-plugin/plugin.json` exists (note both dots). Then trust the folder."),

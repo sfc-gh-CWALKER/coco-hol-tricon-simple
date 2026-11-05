@@ -55,7 +55,7 @@ PROMPT_1_1 = f"""Create an AGENTS.md file at the root of this project. Include:
 render_prompt("Prompt 1.1", "Create AGENTS.md", PROMPT_1_1)
 
 st.markdown("CoCo shows the new file with **Keep** and **Undo** buttons. Read it, then click **Keep**. Yours may be worded differently, and that's OK. It should look something like this, and the schema must be **" + attendee_schema() + "**:")
-st.code(f"""# Project: CoCo DE Guide
+st.code(f"""# Project: tricon_coco_lab
 
 ## Snowflake
 - Database: {LAB_DB}

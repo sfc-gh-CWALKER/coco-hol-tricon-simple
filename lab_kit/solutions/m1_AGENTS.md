@@ -1,4 +1,4 @@
-# Project: Tricon CoCo Lab
+# Project: tricon_coco_lab
 
 ## Snowflake
 - Database: DEMO_DB
@@ -8,6 +8,7 @@
 
 ## dbt
 - dbt runs inside Snowflake (CoCo Desktop Snowflake-managed mode). Never install dbt or use a terminal.
+- Builds use dbt 1.12.3 (picked in the Build run options)
 - Always use `dbt build` (not `dbt run`) so tests run too.
 - Single model: `dbt build --select <model_name>`
 - Never use `--target prod`. There is only the `dev` target.

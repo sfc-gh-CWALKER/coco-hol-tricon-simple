@@ -1,6 +1,6 @@
 import streamlit as st
 
-from components import KIT_NAME, LAB_DB, LAB_ROLE, LAB_WH, attendee_schema, render_kit_download
+from components import DBT_VERSION, KIT_NAME, LAB_DB, LAB_ROLE, LAB_WH, attendee_schema, render_kit_download
 
 st.title("Help & Troubleshooting")
 st.markdown("Find your symptom below. Still stuck? Paste the module's **Catch me up** prompt, or raise your hand.")
@@ -28,7 +28,8 @@ st.markdown(f"""
 | *SNOWFLAKE_SAMPLE_DATA ... does not exist* | Admin needs to share the sample database with {LAB_ROLE}. Raise your hand |
 | Tables appear in someone else's schema | Your `dbt_projects_profiles.yml` doesn't say `{attendee_schema()}`. Download your kit again |
 | Build queued for minutes | 30 people share {LAB_WH}. Wait, or the facilitator sizes it up |
-| *takes no keyword argument 'arguments'* | dbt in Snowflake is 1.9: ask CoCo to remove the `arguments:` wrapper from the tests |
+| *takes no keyword argument 'arguments'* | The Build ran on dbt 1.9. Pick **dbt Version 1.12.3** in the Build run options |
+| *dbt1159 Deprecated test arguments* or *dbt1308 ... account is empty* | The Build ran on dbt 2.0. Pick **dbt Version 1.12.3** |
 | A test fails on `order_status` | TPC-H statuses are **F, O, P**; ask CoCo to fix the test to match the data |
 | CoCo says it can't see the results | Wait for the build to finish (results sync back), then say *built* again |
 """)
@@ -51,3 +52,16 @@ st.markdown("#### Start over")
 with st.container(border=True):
     st.markdown(f"Download a fresh kit, unzip it to a **new** location, and open that folder. Your tables in `{LAB_DB}.{attendee_schema()}` are reused; the next Build overwrites them.")
     render_kit_download("kit_help")
+
+st.markdown("#### Facilitator checklist (before the session)")
+with st.container(border=True):
+    st.markdown(f"""
+- [ ] **Do one real Build click on a Tricon-managed laptop, on the corporate network.** Corporate TLS inspection broke file uploads in the dry run; confirm CoCo's in-Snowflake Build still syncs.
+- [ ] Check the Build run options are set to **dbt Version {DBT_VERSION}**.
+- [ ] Everyone is on **CoCo Desktop 1.21.3 or later** (needed for email-style personal database links in Module 4).
+- [ ] Size **{LAB_WH}** up for the session: about 30 people × 5 builds.
+- [ ] **Your demo laptop has `bash` on PATH** (macOS, or Windows with Git Bash on PATH, then restart CoCo) for the hook demo in Module 3, Step 6.
+- [ ] Remove or disable old copies of **coco-de-guide** and **new-dbt-model** on your demo machine, or `/` shows duplicates.
+- [ ] **Open this lab site 10 minutes early.** Streamlit Community Cloud apps sleep when idle.
+- [ ] Have your GitHub fork, secrets and a PR with a planted violation ready for the Module 4 CI/CD demo.
+""")

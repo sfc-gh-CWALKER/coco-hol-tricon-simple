@@ -96,7 +96,8 @@ with st.container(border=True):
     render_kit_download("kit_setup")
     st.markdown(f"""
 1. **Unzip** it (Windows: right-click → **Extract All**; macOS: double-click). Put it somewhere simple, like Documents.
-2. In CoCo Desktop: **File → Open Folder** → choose the **`{KIT_NAME}`** folder itself (the one that contains `dbt_project.yml`).
+2. In CoCo Desktop: **File → Open Folder** → choose the **`{KIT_NAME}`** folder that contains `dbt_project.yml`.
+   **Windows:** *Extract All* makes a folder inside a folder (`{KIT_NAME}\\{KIT_NAME}`). Open the **inner** one.
 3. Click **Trust** when asked.
 """)
     render_expected("The Explorer (left) shows `models/`, `solutions/`, `dbt_project.yml` and `START_HERE.md`, and a **Project Action Bar** appears at the bottom of the window with project **tricon_coco_lab**.")
@@ -116,7 +117,7 @@ with st.container(border=True):
 4. Don't install anything and don't use a terminal: dbt runs inside Snowflake for this project.
 Finish with one line: READY, or NOT READY plus the exact reason."""
     render_prompt("Prompt 0.1", "Set Me Up", PROMPT_0_1)
-    render_expected(f"**READY** and the schema **{LAB_DB}.{attendee_schema()}**.")
+    render_expected(f"**READY** and the schema **{LAB_DB}.{attendee_schema()}**, ending in *empty schema, a fresh start*. Ran the lab before? It says how many tables are left over; the next Build rebuilds them.")
     render_troubleshoot([
         ("*Another participant already uses these initials*", "Add a letter to your initials in the sidebar (e.g. CJW → CJWA), download the kit again, open the new folder, repeat this step."),
         (f"*Role {LAB_ROLE} ... not authorized*", f"Change role to {LAB_ROLE} (Step 2). If it's missing, raise your hand."),
