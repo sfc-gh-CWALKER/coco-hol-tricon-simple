@@ -1,0 +1,62 @@
+# dbt-review on every pull request, for the simplified Tricon lab.
+# The reviewer only reads files (read/grep/glob), so the runner needs no dbt, no git diff and no bash tool.
+# Repo layout: the lab folder (dbt_project.yml, models/, AGENTS.md, .cortex/plugins/coco-de-guide/) at the repo root.
+# Secrets: SNOWFLAKE_ACCOUNT, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD (a PAT). GitHub's runners must be allowed by the
+# account's network policy (SNOWFLAKE.NETWORK_SECURITY.GITHUBACTIONS_GLOBAL), or the run can't connect.
+name: dbt-review Agent PR Review
+
+on:
+  pull_request:
+    paths:
+      - 'models/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Snowflake connection for Cortex Code
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+        run: |
+          mkdir -p ~/.snowflake
+          {
+            echo "[default]"
+            echo "account = \"$SNOWFLAKE_ACCOUNT\""
+            echo "user = \"$SNOWFLAKE_USER\""
+            echo "password = \"$SNOWFLAKE_PASSWORD\""
+          } > ~/.snowflake/connections.toml
+          chmod 600 ~/.snowflake/connections.toml
+
+      - name: Install the CoCo CLI
+        run: |
+          curl -LsS https://ai.snowflake.com/static/cc-scripts/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Run the dbt-review agent
+        run: |
+          cortex --print "Use the dbt-review agent to review the models in this project. Do not change any files. End your reply with exactly one line: OVERALL: PASS or OVERALL: FAIL" \
+            --plugin-dir .cortex/plugins/coco-de-guide \
+            --connection default \
+            -o review.md || true
+          test -s review.md || echo "dbt-review produced no output (check the Snowflake connection and network policy)." > review.md
+
+      - name: Post the review as a PR comment
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file review.md
+
+      - name: Fail the check unless the review passed
+        run: |
+          grep -q "OVERALL: PASS" review.md

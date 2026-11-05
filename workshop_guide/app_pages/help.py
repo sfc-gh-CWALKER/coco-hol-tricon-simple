@@ -60,8 +60,8 @@ with st.container(border=True):
 - [ ] Check the Build run options are set to **dbt Version {DBT_VERSION}**.
 - [ ] Everyone is on **CoCo Desktop 1.21.3 or later** (needed for email-style personal database links in Module 4).
 - [ ] Size **{LAB_WH}** up for the session: about 30 people × 5 builds.
-- [ ] **Your demo laptop has `bash` on PATH** (macOS, or Windows with Git Bash on PATH, then restart CoCo) for the hook demo in Module 3, Step 6.
+- [ ] **Run `facilitator/check_demos.sh <your lab folder> <connection> --with-pass`** from the lab repo on your demo laptop. It must print *ALL DEMO CHECKS PASSED*. It covers both "watch, don't do" demos: the hook (Module 3, Step 6) and the headless CI review (Module 4, Part B). Needs `bash`, `jq` and the CoCo CLI.
 - [ ] Remove or disable old copies of **coco-de-guide** and **new-dbt-model** on your demo machine, or `/` shows duplicates.
 - [ ] **Open this lab site 10 minutes early.** Streamlit Community Cloud apps sleep when idle.
-- [ ] Have your GitHub fork, secrets and a PR with a planted violation ready for the Module 4 CI/CD demo.
+- [ ] Optional, only if you'll show a real GitHub run: a repo with `facilitator/pr-review.yml`, the three secrets, and the account network policy allowing GitHub Actions (the SE demo account's VPN policy blocks it today).
 """)

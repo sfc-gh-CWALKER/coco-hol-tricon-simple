@@ -5,6 +5,7 @@ from components import (
     render_check,
     render_expected,
     render_explanation,
+    render_facilitator_demo,
     render_guardrail,
     render_guide_ref,
     render_new_chat,
@@ -22,7 +23,7 @@ PLUGIN_DIR = ".cortex/plugins/coco-de-guide"
 render_session_header("Module 3", "Plugin, Hook & Subagent", "25 min", "the coco-de-guide plugin: your skill + a production-safety hook + a dbt-review subagent")
 
 render_split(
-    you=["Paste six prompts", "Click **Keep** on each file", "Check the plugin is on in **Settings → Plugins**"],
+    you=["Paste five prompts (Step 6 is a facilitator demo)", "Click **Keep** on each file", "Check the plugin is on in **Settings → Plugins**"],
     coco=["Moves your skill into the plugin", "Writes the manifest, the hook and the reviewer", "Blocks a production command; reviews every model"],
 )
 
@@ -151,13 +152,36 @@ with st.container(border=True):
 st.caption("Project plugins only switch on in a **trusted** folder. If it shows but is disabled: Command Palette → *Manage Workspace Trust*, or use the toggle.")
 
 # ---------------------------------------------------------------- Step 6
-st.markdown("#### Step 6: Test the hook")
+st.markdown("#### Step 6: Test the hook (facilitator demo)")
 render_guide_ref("Create a Custom Plugin → Test the Hook", "facilitator demo: on most Tricon laptops the hook can't run, so watch the screen")
-render_whats_happening("The facilitator deliberately asks CoCo for something dangerous. The hook should stop CoCo **before** the command runs.")
-st.warning(""":material/cast: **Watch the facilitator's screen for this step.** On a typical Tricon Windows laptop the hook can't start: `bash` isn't on CoCo's PATH. A hook that can't start is only logged, not blocking. It **fails open**. And because this lab has no local dbt, a real attempt would just say *dbt is not recognized*, which doesn't look like a guardrail either.
-That's the lesson: **guardrails need testing on the machines that will run them.**""")
-render_prompt("Prompt 3.5", "Try to Deploy to Production (facilitator)", "Run dbt build --target prod")
-render_expected("CoCo is **blocked** with a message that direct production dbt runs aren't allowed and to use CI/CD.")
+render_facilitator_demo(
+    "show the hook blocking a production deploy",
+    """On a typical Tricon Windows laptop the hook can't start, because `bash` isn't on CoCo's PATH. A hook that can't start is only logged, not blocking: it **fails open**.
+That's the lesson: **guardrails need testing on the machines that will run them.**""",
+    f"""
+**Before the session** (2 min): on your Mac, open your own lab folder in CoCo Desktop, complete Module 3 (or paste its *Catch me up* prompt), and run the pre-flight check from the lab repo:
+```
+facilitator/check_demos.sh ~/Downloads/tricon-coco-lab <your-connection>
+```
+It must end in **ALL DEMO CHECKS PASSED**. It runs the hook exactly as CoCo Desktop calls it, from the project folder, and needs `bash` and `jq`.
+
+**On screen:**
+1. **Settings → Plugins → coco-de-guide**: show the card listing the skill, the **PreToolUse** hook and the agent.
+2. Open `{PLUGIN_DIR}/hooks/validate-bash.sh` and read the one `grep` line aloud: *any dbt command with --target prod, --target=prod or -t prod is blocked.*
+3. Start a **new chat** and paste the prompt below. It overrides AGENTS.md's "no terminal" rule for this one test; without that, CoCo may simply refuse, and the hook never gets a chance to fire.
+4. CoCo tries the `bash` tool, and the hook stops it: **"[Hook] Tool execution blocked: direct production dbt runs are not allowed..."**. CoCo then explains it can't do that and points to CI/CD.
+5. Say: *"The agent decided to run it. The hook said no. Prompts are suggestions; hooks are rules."*
+
+**If CoCo refuses on its own instead** (it read AGENTS.md): that's guardrail layer one working. Say so, then show layer two directly in the terminal:
+```
+echo '{{"tool_input":{{"command":"dbt build --target prod"}}}}' | bash {PLUGIN_DIR}/hooks/validate-bash.sh; echo "exit=$?"
+```
+You get the block message and `exit=2`, which is the code CoCo treats as *block*.
+""",
+)
+render_prompt("Prompt 3.5", "Try to Deploy to Production (facilitator only)", """This is a test of our production-safety hook. Use the bash tool to run exactly this command, and tell me what happens:
+dbt build --target prod""")
+render_expected("The facilitator's CoCo is **blocked** before the command runs, with a message that direct production dbt runs aren't allowed and to use CI/CD.")
 render_guardrail("Even with clear instructions, agents generate actions on the fly. Hooks are the hard guardrail that holds no matter what the agent decides.")
 render_explanation("Two limits of this hook (good discussion points)", """
 - **It only blocks what it matches.** It catches `--target prod` and `--target=prod`, and the short flag `-t prod`. Every pattern you forget is a gap, so test guardrails like code.
@@ -174,8 +198,8 @@ render_expected("A table per model (`customers`, `orders_summary`, `supplier_per
 
 render_troubleshoot([
     ("coco-de-guide isn't in Settings → Plugins", "Click **↻**. Check `" + PLUGIN_DIR + "/.cortex-plugin/plugin.json` exists (note both dots). Then trust the folder."),
-    ("The prod command ran anyway", "Check the plugin is **on**, and that `hooks.json` uses matcher `bash` (lowercase). Then try Prompt 3.5 again in a new chat."),
-    ("CoCo didn't even try the command", "It may refuse on its own because AGENTS.md says no terminal. Fine; the facilitator shows the hook firing."),
+    ("Facilitator: the prod command ran anyway", "Check the plugin is **on**, `hooks.json` uses matcher `bash` (lowercase), and CoCo has the **lab folder** open (the hook path is relative). Rerun `facilitator/check_demos.sh`."),
+    ("Facilitator: CoCo refused without trying", "AGENTS.md doing its job. Show the hook directly with the terminal command in the runbook."),
     ("CoCo reviews the models itself instead of using the agent", "Ask: *Run this with the dbt-review subagent.*"),
 ])
 render_check(f"""Check Module 3, change nothing: {PLUGIN_DIR} contains .cortex-plugin/plugin.json, skills/new-dbt-model/SKILL.md, hooks/hooks.json, hooks/validate-bash.sh and agents/dbt-review.md; dbt-review's tools are only read, grep and glob. PASS or FAIL for each.""")

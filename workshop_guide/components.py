@@ -11,7 +11,7 @@ SESSION_PROMPTS = {
     "0": ["Prompt 0.1"],
     "1": ["Prompt 1.1", "Prompt 1.2"],
     "2": ["Prompt 2.1", "Prompt 2.2", "Prompt 2.3"],
-    "3": ["Prompt 3.1", "Prompt 3.2", "Prompt 3.3", "Prompt 3.4", "Prompt 3.5", "Prompt 3.6"],
+    "3": ["Prompt 3.1", "Prompt 3.2", "Prompt 3.3", "Prompt 3.4", "Prompt 3.6"],  # 3.5 is the facilitator hook demo
     "4": ["Prompt 4.1"],
 }
 
@@ -227,3 +227,10 @@ def render_whats_happening(text: str):
 def render_presenter(notes: str):
     with st.expander(":material/record_voice_over: Presenter notes"):
         st.markdown(personalize(notes))
+
+
+def render_facilitator_demo(title: str, why: str, runbook: str):
+    """A 'watch, don't do' step: attendees see why; facilitators expand the exact runbook."""
+    st.error(f":material/do_not_touch: **Attendees: don't do this step. Watch the facilitator's screen.** {why}")
+    with st.expander(f":material/co_present: Facilitator runbook: {title}"):
+        st.markdown(personalize(runbook))

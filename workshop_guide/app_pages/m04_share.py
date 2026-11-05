@@ -4,6 +4,7 @@ from components import (
     ORIGINAL_APP,
     render_expected,
     render_explanation,
+    render_facilitator_demo,
     render_guide_ref,
     render_presenter,
     render_prompt,
@@ -64,18 +65,50 @@ render_troubleshoot([
 
 # ---------------------------------------------------------------- Part B
 st.markdown("### Part B: Enforce standards automatically in CI/CD (facilitator demo)")
-render_guide_ref("Enforce Standards Automatically in CI/CD", "watch, not hands-on: it needs your own GitHub fork and a Snowflake token")
+render_guide_ref("Enforce Standards Automatically in CI/CD", "facilitator demo: needs a GitHub repo, a Snowflake token and network access that Tricon laptops and accounts don't have today")
+render_facilitator_demo(
+    "run dbt-review exactly as CI does",
+    "CI needs a GitHub repository, stored secrets and network access for GitHub's servers. None of that is set up for attendees, and it isn't needed to see the idea.",
+    """
+**Before the session** (about 3 min): from the lab repo, run the pre-flight. It plants a violation in a *copy* of your lab folder and runs the exact CI command against it:
+```
+facilitator/check_demos.sh ~/Downloads/tricon-coco-lab <your-connection> --with-pass
+```
+It must end in **ALL DEMO CHECKS PASSED**: planted violation → `OVERALL: FAIL`, clean project → `OVERALL: PASS`. Needs the CoCo CLI (`cortex`) on your Mac.
+
+**On screen, main demo (works anywhere, about 1 minute):**
+1. Show the workflow file `facilitator/pr-review.yml`. Point at its one real step, the same subagent from Module 3:
+   `cortex --print "Use the dbt-review agent ..." --plugin-dir .cortex/plugins/coco-de-guide`
+2. In your lab folder, create `models/bad_orders.sql`, a "teammate's change" that breaks the rule:
+   ```
+   SELECT o_orderkey AS order_key FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.ORDERS
+   ```
+3. In the CoCo Desktop **terminal**, run what CI runs:
+   ```
+   cortex --print "Use the dbt-review agent to review the models in this project. Do not change any files. End your reply with exactly one line: OVERALL: PASS or OVERALL: FAIL" --plugin-dir .cortex/plugins/coco-de-guide --connection <your-connection> -o review.md
+   ```
+4. Open `review.md`. It names `bad_orders.sql:2`, gives the `source()` fix and ends **OVERALL: FAIL**. In GitHub this is the PR comment, and the failed check blocks the merge.
+5. Delete `models/bad_orders.sql` so your folder is clean again.
+
+Say: *"Same agent, two contexts. Desktop while you work, headless on every pull request. No human has to remember the rules."*
+
+**Optional extra: the real GitHub run.** Only if prepared in advance; it hasn't been run against this lab's layout yet:
+- A GitHub repo with your lab folder at the root, plus `.github/workflows/pr-review.yml` copied from `facilitator/pr-review.yml`
+- Secrets `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD` (a PAT)
+- The demo account's network policy must allow `SNOWFLAKE.NETWORK_SECURITY.GITHUBACTIONS_GLOBAL`. The SE demo account's VPN-only policy blocks GitHub today, so a run fails to connect without this change.
+- Open a PR adding `bad_orders.sql`: the review posts as a comment in 1–2 minutes, and the check goes red.
+""",
+)
 render_whats_happening("""**CI/CD** means checks that run by themselves whenever someone proposes a change (a *pull request*).
 The guide wires the **same dbt-review subagent** from Module 3 into GitHub Actions: every pull request that touches a model gets a PASS/FAIL review posted as a comment, before a person approves it.""")
 with st.container(border=True):
     st.markdown("""
 **What the facilitator shows:**
-1. **GitHub secrets**: `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD` (a token) on the repo
-2. **A workflow file**, `.github/workflows/pr-review.yml`, written by CoCo from one prompt. It installs the **CoCo CLI**, connects to Snowflake and runs:
-   `cortex --print "Use the dbt-review agent to review the changes in this PR"`
-3. **A pull request** with a planted violation, and the review comment appearing on it
+1. **A workflow file**, `pr-review.yml`, that installs the **CoCo CLI**, connects to Snowflake and runs the dbt-review agent headless
+2. **A "teammate's change"** that reads the raw table directly, breaking the AGENTS.md rule
+3. **The review**: it names the file and line, proposes the `source()` fix, and ends **OVERALL: FAIL**. In GitHub that's the PR comment and a red check.
 
-**Why the CLI here?** Desktop is for interactive work. The CLI runs headless in any CI system, and it finds the same plugin in `.cortex/plugins/` with no install step.
+**Why the CLI here?** Desktop is for interactive work. The CLI runs headless in any CI system and uses the same plugin from `.cortex/plugins/`.
 """)
 st.markdown(f"Want to do it yourself after the workshop? The [full lab guide]({ORIGINAL_APP}) walks through it, with Git and a local dbt install.")
 
@@ -96,7 +129,7 @@ render_explanation("The whole journey, in one table", """
 render_presenter("""
 **Close with Jeremiah's line:** "Anyone can get an AI agent to produce a result. Professionals ensure the right result, every time." Then walk the table above.
 
-**Part B demo checklist:** have your fork open, the secrets set, and a branch with a planted violation (e.g. a model using `SNOWFLAKE_SAMPLE_DATA` directly) ready to open as a PR. The review takes 2–4 minutes; talk through the workflow file while it runs.
+**Part B:** run `facilitator/check_demos.sh` that morning. Then follow the runbook above: planted `bad_orders.sql`, then the headless review, then OVERALL: FAIL. The review takes about a minute; talk through `facilitator/pr-review.yml` while it runs.
 
 **Bridge to Build Week:** "Every Build Week idea should end the same way: an agent that proposes, a person who approves, and a guardrail that holds."
 """)
