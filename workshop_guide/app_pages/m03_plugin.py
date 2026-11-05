@@ -130,7 +130,7 @@ for the correct agent definition format and frontmatter schema.
 Create a dbt-review subagent at {PLUGIN_DIR}/agents/dbt-review.md.
 The subagent should:
 - Review every dbt model file in models/
-- Read target/run_results.json to see whether the last build and its tests passed. If the file doesn't exist, report that check as N/A: "no build results yet: click Build", not FAIL
+- Check target/run_results.json to see whether the last build and its tests passed. It is large, so grep it for "status" and "unique_id" instead of reading it whole. If the file doesn't exist, report that check as N/A: "no build results yet: click Build", not FAIL
 - Verify that each convention from the new-dbt-model skill is met
 - Produce a concise PASS/FAIL report per convention with specific remediation steps for any failures
 - For build fixes, the remediation is "click Build on the Project Action Bar"; never suggest dbt terminal commands
