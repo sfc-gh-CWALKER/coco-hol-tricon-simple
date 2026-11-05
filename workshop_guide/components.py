@@ -1,3 +1,4 @@
+import hashlib
 import io
 import re
 import zipfile
@@ -56,9 +57,23 @@ def personalize(text: str) -> str:
     return text.replace(INITIALS_PLACEHOLDER, initials) if initials else text
 
 
+def _kit_version() -> str:
+    """Fingerprint of every file in lab_kit/, so any edit to the kit busts the ZIP cache."""
+    h = hashlib.sha256()
+    for path in sorted(_KIT_DIR.rglob("*")):
+        if path.is_file() and path.name != ".DS_Store":
+            h.update(path.relative_to(_KIT_DIR).as_posix().encode())
+            h.update(path.read_bytes())
+    return h.hexdigest()[:12]
+
+
 @st.cache_data(show_spinner=False)
-def _kit_zip(initials: str) -> bytes:
-    """The lab folder, with this attendee's initials already in every file."""
+def _kit_zip(initials: str, kit_version: str) -> bytes:
+    """The lab folder, with this attendee's initials already in every file.
+
+    `kit_version` is only part of the cache key: lab_kit/ changes must produce a new ZIP
+    even though Streamlit Cloud hot-reloads without clearing st.cache_data.
+    """
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
         for path in sorted(_KIT_DIR.rglob("*")):
@@ -77,12 +92,13 @@ def render_kit_download(key: str = "kit"):
         return
     st.download_button(
         f":material/download: Download {KIT_NAME}.zip (for {attendee_initials()})",
-        data=_kit_zip(attendee_initials()),
+        data=_kit_zip(attendee_initials(), _kit_version()),
         file_name=f"{KIT_NAME}-{attendee_initials()}.zip",
         mime="application/zip",
         type="primary",
         key=key,
     )
+    st.caption(f"Kit version `{_kit_version()}`. The `solutions/` folder should contain `m3_plugin/`.")
 
 
 # ---------------------------------------------------------------- progress
