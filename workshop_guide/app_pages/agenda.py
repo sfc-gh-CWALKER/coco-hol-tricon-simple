@@ -1,15 +1,15 @@
 import streamlit as st
 
 st.title("Agenda")
-st.markdown("About 90 minutes, hands-on. The facilitator works through each module on screen while you follow along.")
+st.markdown("About 2 hours, hands-on, in the same order as Jeremiah Hansen's *Data Engineering with CoCo* guide. The facilitator works through each module on screen while you follow along.")
 
 LAB = [
-    ("0", "Setup: install CoCo Desktop, sign in, open the lab folder, first build", "10 min"),
-    ("1", "Team rules: AGENTS.md, and an audit of the starter code", "20 min"),
-    ("2", "Data quality tests that run on every build", "15 min"),
-    ("3", "A reusable skill for new dbt models", "20 min"),
-    ("4", "A read-only review agent, plus a demo of plugins and CI", "15 min"),
-    ("★", "Optional automation showcase, then a recap and Build Week ideas", "10-20 min"),
+    ("0", "Setup and What is Cortex Code? Sign in, open the lab folder, first build", "10 min"),
+    ("1", "Create an AGENTS.md, then audit and fix the starter code", "15 min"),
+    ("2", "Schema tests without a skill, then the new-dbt-model skill", "25 min"),
+    ("3", "Plugin: move the skill in, add a prod-safety hook and a dbt-review subagent", "25 min"),
+    ("4", "Publish to the Plugins Catalog; CI/CD live demo", "20 min"),
+    ("★", "Optional automation showcase, recap and Build Week ideas", "10-20 min"),
 ]
 with st.container(border=True):
     for key, title, dur in LAB:

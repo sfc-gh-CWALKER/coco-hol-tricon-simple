@@ -13,28 +13,32 @@ st.space("small")
 st.markdown("#### How this lab works")
 with st.container(border=True):
     st.markdown("""
-- **You** do a few things by hand: sign in, open the lab folder, paste prompts, approve changes, and click **Build**.
-- **CoCo** does the technical work: writes the files, checks the data, explains results, and checks its own work.
+This is **Jeremiah Hansen's Snowflake guide, [Data Engineering with CoCo](https://www.snowflake.com/en/developers/guides/data-engineering-with-coco/)**, same modules, same order, nearly the same prompts, made simpler to set up:
+
+- **You** sign in, open the lab folder, paste prompts, approve changes, and click **Build**.
+- **CoCo** writes the files, checks the data, explains results, and checks its own work.
 - **dbt runs inside Snowflake**, so there's no Git, Python, dbt or terminal on your laptop. Windows and Mac follow the same steps.
-- Every module has a **Check it** prompt (CoCo tells you PASS/FAIL) and a **Catch me up** prompt if you fall behind.
+- Every step shows **which guide section it matches**, a plain-language **What's happening**, a **Check it** prompt and a **Catch me up** prompt.
 """)
 
 st.markdown("#### The rule for every automation")
 with st.container(border=True):
     st.markdown("""
-**Agents propose. People approve. Nothing touches production.**
-You work only in your own schema, CoCo shows every change before saving it, and the review agent in Module 4 can read but never edit.
+**Agents propose. People approve. Guardrails hold.**
+You work only in your own schema, CoCo shows every change before saving it, a hook blocks production commands, and the review agent can read but never edit.
 """)
 
 st.markdown("#### What you'll build")
 st.markdown("""
-| Module | What | Time |
-|---|---|---|
-| 0 | Setup: sign in, open the folder, first build | 10 min |
-| 1 | **AGENTS.md**: team rules CoCo follows every session | 20 min |
-| 2 | **Data quality tests** that run on every build | 15 min |
-| 3 | A reusable **skill** for building new models | 20 min |
-| 4 | A read-only **review agent** | 15 min |
-| ★ | Optional showcase: pipeline health, sensitive-data sweep, HTML KPI report, warehouse advice | 20 min |
+| Module | Guide section | What you build | Time |
+|---|---|---|---|
+| 0 | Setup · What is Cortex Code? | Sign in, open the folder, first build | 10 min |
+| 1 | Create an AGENTS.md | Project context + an audit that fixes the starter code | 15 min |
+| 2 | What is a Skill? · Create a Custom Skill | Schema tests, a **new-dbt-model** skill, a model built with it | 25 min |
+| 3 | What is a Plugin? · Create a Custom Plugin | **coco-de-guide** plugin: skill + prod-safety **hook** + **dbt-review** subagent | 25 min |
+| 4 | Plugin Catalog · CI/CD | Publish to the **Plugins Catalog**; CI/CD as a live demo | 20 min |
+| ★ | Optional | Automation showcase: pipeline health, sensitive data, KPI report, warehouse advice | 20 min |
+
+**What's different from the guide:** no fork/clone, PAT or dbt profile (one ZIP instead); you click **Build** instead of typing `dbt build`; the reviewer reads build results instead of a git diff; CI/CD is demonstrated rather than hands-on.
 """)
 st.info(":material/arrow_back: Start by typing your **initials** in the sidebar, then open **0. Setup**.")

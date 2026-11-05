@@ -39,6 +39,9 @@ st.markdown("""
 | CoCo wants to install dbt, Python or run a terminal | Say: *No installs. This project's dbt runs in Snowflake; I'll click Build.* |
 | CoCo runs `cortex ...` or `git` commands | Say: *Don't use the cortex CLI or git; write the files directly.* |
 | A skill or agent doesn't show up | Reopen the folder (**File → Open Recent**), then start a new chat |
+| The plugin isn't in **Settings → Plugins** | Click **↻**. The folder must be **trusted** (Command Palette → *Manage Workspace Trust*), and `.cortex/plugins/coco-de-guide/.cortex-plugin/plugin.json` must exist |
+| The hook didn't block `--target prod` | The plugin must be **on**; on Windows the hook needs `bash`. Watch the facilitator's demo |
+| *Publish to Plugins Catalog* fails on privileges | Your account restricts publishing. The facilitator demos it |
 | CoCo seems confused | Start a **new chat** (**+** at the top of the chat panel) |
 | You want the reference answer | Everything is in the `solutions/` folder |
 """)

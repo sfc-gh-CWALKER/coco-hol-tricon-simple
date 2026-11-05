@@ -23,7 +23,7 @@ render_prompt("Prompt A1.1", "Freshness Check", f"""In {LAB_DB}.{attendee_schema
 Flag any table not updated in the last 24 hours as STALE and any table with 0 rows as EMPTY.
 Then read target/run_results.json and list any failed models or tests.
 Write a short health report to reports/pipeline_health.md: a status table, then "what to check first" in plain language. Don't change anything else.""")
-render_prompt("Prompt A1.2", "Make It Repeatable", """Turn what you just did into a project skill at .cortex/skills/pipeline-health/SKILL.md, so anyone on the team can run "check pipeline health" and get the same report.
+render_prompt("Prompt A1.2", "Make It Repeatable", """Turn what you just did into a project skill at .cortex/plugins/coco-de-guide/skills/pipeline-health/SKILL.md (inside your plugin from Module 3), so anyone on the team can run "check pipeline health" and get the same report.
 Show me the file, then save it.""")
 render_expected("`reports/pipeline_health.md` with a status table, and a `pipeline-health` skill your team can reuse.")
 

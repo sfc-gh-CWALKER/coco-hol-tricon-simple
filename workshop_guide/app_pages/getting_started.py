@@ -10,7 +10,9 @@ from components import (
     render_catch_up,
     render_check,
     render_expected,
+    render_guide_ref,
     render_kit_download,
+    render_presenter,
     render_prompt,
     render_split,
     render_troubleshoot,
@@ -27,6 +29,38 @@ render_split(
     you=["Install CoCo Desktop", "Sign in with your browser", "Download and open the lab folder", "Click **Build** once"],
     coco=["Creates your schema", "Checks everything is connected", "Tells you **READY** or what to fix"],
 )
+
+render_guide_ref("Setup", "the ZIP replaces fork/clone, the PAT and the dbt profile; dbt runs inside Snowflake")
+
+st.markdown("#### What is Cortex Code?")
+with st.container(border=True):
+    st.markdown("""
+**Cortex Code (CoCo)** is Snowflake's AI coding agent. You describe what you want in plain English; it reads your project, writes the code, runs it, and checks the result.
+Unlike a generic assistant it knows Snowflake natively: your schemas, your role's permissions and Snowflake best practices. The model and your data stay inside Snowflake's security boundary.
+
+It comes in three forms. Today we use **CoCo Desktop**, because it supports everything we build: skills, plugins, hooks and subagents.
+
+| Form | Best for |
+|---|---|
+| CoCo in Snowsight | SQL and notebooks in the browser, nothing to install |
+| **CoCo Desktop** (today) | Full projects: files, skills, plugins, hooks, subagents |
+| CoCo CLI | Terminal and automation, e.g. CI/CD (the facilitator demos it in Module 4) |
+""")
+
+with st.expander(":material/school: New to dbt? The 2-minute version", expanded=True):
+    st.markdown("""
+**dbt** turns SQL `SELECT` statements into tables, in the right order, with tests. That's all you need for today.
+
+| Word | Means | In your lab folder |
+|---|---|---|
+| **Model** | One `.sql` file = one table dbt builds | `models/customers.sql`, `models/orders_summary.sql` |
+| **Source** | Raw data dbt reads from (here: Snowflake's built-in TPC-H sample sales data) | `models/_sources.yml` |
+| **`source()`** | How a model points at raw data, instead of typing the full table name | `{{ source('tpch', 'orders') }}` |
+| **Test** | A rule the data must pass, e.g. *no duplicate keys* | `models/_schema.yml` (CoCo creates it in Module 2) |
+| **Build** | Create every table, then run every test | The **Build** button at the bottom of CoCo Desktop |
+
+**The data:** TPC-H, a standard sample of customers, orders, line items and suppliers that's in every Snowflake account. Your tables land in **your own schema**, so nobody overwrites anyone.
+""")
 
 if not setup_complete():
     st.warning("**First, type your initials in the sidebar** (3 letters, e.g. CJW). Your download and every prompt then use them.", icon=":material/arrow_back:")

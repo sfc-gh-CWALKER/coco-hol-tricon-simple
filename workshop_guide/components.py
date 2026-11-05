@@ -8,14 +8,10 @@ import streamlit as st
 # Prompt ids per module; a module shows a check in the sidebar once all are done.
 SESSION_PROMPTS = {
     "0": ["Prompt 0.1"],
-    "1": ["Prompt 1.1", "Prompt 1.2", "Prompt 1.3"],
-    "2": ["Prompt 2.1", "Prompt 2.2"],
-    "3": ["Prompt 3.1", "Prompt 3.2"],
-    "4": ["Prompt 4.1", "Prompt 4.2"],
-    "A1": ["Prompt A1.1", "Prompt A1.2"],
-    "A2": ["Prompt A2.1", "Prompt A2.2"],
-    "A3": ["Prompt A3.1", "Prompt A3.2"],
-    "A4": ["Prompt A4.1"],
+    "1": ["Prompt 1.1", "Prompt 1.2"],
+    "2": ["Prompt 2.1", "Prompt 2.2", "Prompt 2.3"],
+    "3": ["Prompt 3.1", "Prompt 3.2", "Prompt 3.3", "Prompt 3.4", "Prompt 3.5", "Prompt 3.6"],
+    "4": ["Prompt 4.1"],
 }
 
 # Shared objects, created once by the workshop admin. Same as the original lab.
@@ -24,6 +20,7 @@ LAB_WH = "DEMO_WH"
 LAB_DB = "DEMO_DB"
 KIT_NAME = "tricon-coco-lab"
 ORIGINAL_APP = "https://coco-hol-tricon-de-gejm3sg47ufychnq9jpkqg.streamlit.app/"
+GUIDE_URL = "https://www.snowflake.com/en/developers/guides/data-engineering-with-coco/"
 MIN_COCO_NOTE = "the latest CoCo Desktop (Help → Check for Updates)"
 
 INITIALS_PLACEHOLDER = "<INITIALS>"
@@ -196,3 +193,19 @@ def render_what_you_built(items: list[str]):
     st.markdown("##### :material/check_circle: What you built")
     for item in items:
         st.markdown(f"- :green-badge[Done] {personalize(item)}")
+
+
+def render_guide_ref(section: str, change: str = ""):
+    """Ties a step to the matching section of Jeremiah Hansen's guide, so presenters stay in sync."""
+    note = f" · :orange[Simplified: {change}]" if change else " · same as the guide"
+    st.caption(f":material/menu_book: Guide: [{section}]({GUIDE_URL}){note}")
+
+
+def render_whats_happening(text: str):
+    """Plain-language explanation for people new to dbt or coding agents."""
+    st.info(personalize(f":material/lightbulb: **What's happening:** {text}"))
+
+
+def render_presenter(notes: str):
+    with st.expander(":material/record_voice_over: Presenter notes"):
+        st.markdown(personalize(notes))

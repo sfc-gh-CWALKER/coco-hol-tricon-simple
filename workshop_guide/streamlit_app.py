@@ -77,12 +77,12 @@ page = st.navigation(
             st.Page("app_pages/home.py", title="Home", icon=":material/home:"),
             st.Page("app_pages/agenda.py", title="Agenda", icon=":material/calendar_today:"),
         ],
-        "Hands-on lab": [
+        "Data Engineering with CoCo (Jeremiah Hansen's guide)": [
             st.Page("app_pages/getting_started.py", title=_title("0", "Setup"), icon=":material/rocket_launch:"),
-            st.Page("app_pages/m01_agents_md.py", title=_title("1", "Team Rules (AGENTS.md)"), icon=":material/description:"),
-            st.Page("app_pages/m02_tests.py", title=_title("2", "Data Quality Tests"), icon=":material/rule:"),
-            st.Page("app_pages/m03_skill.py", title=_title("3", "Custom Skill"), icon=":material/auto_fix_high:"),
-            st.Page("app_pages/m04_review.py", title=_title("4", "Review Agent"), icon=":material/fact_check:"),
+            st.Page("app_pages/m01_agents_md.py", title=_title("1", "AGENTS.md"), icon=":material/description:"),
+            st.Page("app_pages/m02_skill.py", title=_title("2", "Tests & Custom Skill"), icon=":material/auto_fix_high:"),
+            st.Page("app_pages/m03_plugin.py", title=_title("3", "Plugin, Hook & Subagent"), icon=":material/extension:"),
+            st.Page("app_pages/m04_share.py", title=_title("4", "Plugin Catalog & CI/CD"), icon=":material/sync_alt:"),
         ],
         "Optional": [
             st.Page("app_pages/showcase.py", title="Automation Showcase", icon=":material/bolt:"),
