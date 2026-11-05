@@ -107,7 +107,7 @@ render_troubleshoot([
     ("CoCo tries to install dbt or open a terminal", "Reply: *No. AGENTS.md says dbt runs in Snowflake; I'll click Build.*"),
     ("You clicked **Undo** by mistake", "Send the prompt again."),
 ])
-render_check(f"""Check Module 1, change nothing: AGENTS.md is at the project root and names schema {attendee_schema()}; no file in models/ contains SNOWFLAKE_SAMPLE_DATA; the last build in target/run_results.json succeeded. PASS or FAIL for each.""")
+render_check(f"""Check Module 1, change nothing: AGENTS.md is at the project root and names schema {attendee_schema()}; no .sql file in models/ contains SNOWFLAKE_SAMPLE_DATA (models/_sources.yml is supposed to name it; that's where source() points); the last build in target/run_results.json succeeded. PASS or FAIL for each.""")
 render_catch_up("""Catch me up on Module 1: copy solutions/m1_AGENTS.md to AGENTS.md at the project root, and copy solutions/m1_orders_summary.sql over models/orders_summary.sql. Then tell me to click Build.""")
 
 render_explanation("Why this matters", """
