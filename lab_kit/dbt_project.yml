@@ -1,0 +1,12 @@
+name: tricon_coco_lab
+version: '1.0.0'
+config-version: 2
+
+profile: tricon_coco_lab
+
+model-paths: ["models"]
+test-paths: ["tests"]
+
+models:
+  tricon_coco_lab:
+    +materialized: table

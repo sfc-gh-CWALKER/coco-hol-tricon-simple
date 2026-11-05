@@ -1,0 +1,14 @@
+# Used by CoCo Desktop's Snowflake-managed dbt mode: dbt runs inside Snowflake
+# as you, so no account, user or password is needed here.
+tricon_coco_lab:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: ""
+      user: ""
+      role: DEMO_ROLE
+      warehouse: DEMO_WH
+      database: DEMO_DB
+      schema: TPCH_<INITIALS>
+      threads: 4

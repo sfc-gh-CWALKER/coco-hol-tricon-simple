@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.DS_Store
+.env
+venv/
+.venv/
+dbt/target/
+dbt/logs/
+# Personal dbt profile written by Getting Started, Step 5 (account + username only, but never commit it)
+/profiles.yml
+.dbtprof/
+dbt/dbt_packages/
+logs/
+.venv/
+__pycache__/
+.DS_Store
