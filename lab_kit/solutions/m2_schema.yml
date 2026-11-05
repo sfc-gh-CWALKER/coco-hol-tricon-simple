@@ -11,8 +11,7 @@ models:
       - name: market_segment
         tests:
           - accepted_values:
-              arguments:
-                values: ['AUTOMOBILE', 'BUILDING', 'FURNITURE', 'HOUSEHOLD', 'MACHINERY']
+              values: ['AUTOMOBILE', 'BUILDING', 'FURNITURE', 'HOUSEHOLD', 'MACHINERY']
       - name: region
         tests: [not_null]
 
@@ -25,13 +24,11 @@ models:
         tests:
           - not_null
           - relationships:
-              arguments:
-                to: ref('customers')
-                field: customer_key
+              to: ref('customers')
+              field: customer_key
       - name: order_status
         tests:
           - accepted_values:
-              arguments:
-                values: ['F', 'O', 'P']
+              values: ['F', 'O', 'P']
       - name: line_item_count
         tests: [not_null]

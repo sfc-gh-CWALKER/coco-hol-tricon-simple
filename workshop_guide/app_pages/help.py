@@ -28,6 +28,7 @@ st.markdown(f"""
 | *SNOWFLAKE_SAMPLE_DATA ... does not exist* | Admin needs to share the sample database with {LAB_ROLE}. Raise your hand |
 | Tables appear in someone else's schema | Your `dbt_projects_profiles.yml` doesn't say `{attendee_schema()}`. Download your kit again |
 | Build queued for minutes | 30 people share {LAB_WH}. Wait, or the facilitator sizes it up |
+| *takes no keyword argument 'arguments'* | dbt in Snowflake is 1.9: ask CoCo to remove the `arguments:` wrapper from the tests |
 | A test fails on `order_status` | TPC-H statuses are **F, O, P**; ask CoCo to fix the test to match the data |
 | CoCo says it can't see the results | Wait for the build to finish (results sync back), then say *built* again |
 """)

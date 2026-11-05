@@ -52,7 +52,7 @@ render_new_chat()
 
 # ---------------------------------------------------------------- Step 1
 st.markdown("#### Step 1: Add schema tests, without any skill")
-render_guide_ref("Using CoCo Without a Skill → Add Schema Tests Without Any Skill", "the file lives at models/_schema.yml (no dbt/ folder)")
+render_guide_ref("Using CoCo Without a Skill → Add Schema Tests Without Any Skill", "the file lives at models/_schema.yml, and the last line changes: dbt in Snowflake is version 1.9, which doesn't accept the guide's arguments: key")
 render_whats_happening("""Tests are rules the data must pass every time it builds, for example *every order key is unique* or *no customer is missing*.
 You're not telling CoCo which columns are keys or how dbt tests work. This step shows how much it **already knows** before you write any skill.""")
 
@@ -60,7 +60,7 @@ PROMPT_2_1 = """Add schema tests to the existing models in this project.
 Save the results in models/_schema.yml.
 At a minimum, each model's primary key should have not_null and unique tests.
 Add any other tests that make sense given the columns in each model.
-For parameterized tests like accepted_values, nest all test parameters under an arguments: key."""
+This project's dbt runs inside Snowflake on dbt 1.9, so put test parameters like values: directly under the test name (no arguments: key)."""
 render_prompt("Prompt 2.1", "Add Schema Tests (No Skill)", PROMPT_2_1)
 render_expected("A new `models/_schema.yml` with `not_null` and `unique` on `customer_key` and `order_key`, plus a few more tests. Click **Keep**.")
 render_build_click("Build")
@@ -68,7 +68,7 @@ render_expected("**Success**, with every test passing (roughly 10 or more, depen
 
 render_troubleshoot([
     ("A test on `order_status` fails", "TPC-H order statuses are **F, O, P**. Ask: *Fix the accepted_values for order_status to match the data.* The guide notes this: not every column that looks like a rule actually holds in TPC-H."),
-    ("*'arguments' is not a valid key*", "Ask: *Remove the arguments: wrapper from the tests.*"),
+    ("*takes no keyword argument 'arguments'*", "dbt in Snowflake is 1.9 and doesn't accept the `arguments:` key. Ask: *Remove the arguments: wrapper from every test in _schema.yml and put the parameters directly under the test.* Then Build again."),
     ("Build says 0 tests", "The file must be `models/_schema.yml`. Ask CoCo to move it there, then Build again."),
 ])
 
