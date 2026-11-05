@@ -34,7 +34,7 @@ Right now your plugin lives in your lab folder. The **Plugins Catalog** is Snowf
 
 Publishing creates a `CORTEX EXTENSION` object in your **personal database**. At Tricon, usernames are email addresses, so the database name has an `@` in it and needs double quotes:
 `"USER$KTE@TRICONHOMES.COM".SKILL_SHARING.COCO_DE_GUIDE` (yours uses your email), with a share link like
-`snow://skill_catalog/"USER$KTE@TRICONHOMES.COM".SKILL_SHARING.COCO_DE_GUIDE/versions/version$1/`
+`snow://skill_catalog/"USER$KTE@TRICONHOMES.COM".SKILL_SHARING.COCO_DE_GUIDE`
 Copy the link CoCo gives you exactly, quotes included. Email-style links need **CoCo Desktop 1.21.3 or later**.
 """)
 render_whats_happening("One button turns your folder into a governed Snowflake object. A chat opens and a built-in skill does the work; you just confirm.")
@@ -43,13 +43,16 @@ with st.container(border=True):
 1. **Settings** gear (bottom of the left sidebar) → **Plugins**.
 2. Click the **coco-de-guide** card → **Publish to Plugins Catalog** (cloud-upload icon).
 3. A chat opens and the `share-skill-and-plugin` skill runs. Confirm the **name** and **description**.
-4. When it asks about visibility, keep the default: **not discoverable**, reachable only by people you give the link to.
+4. When it asks who can access it, keep the default for the lab: **only you**. The link alone doesn't give anyone access. A teammate also needs **READ** granted to one of their roles (see below).
 """)
-render_expected("CoCo reports a **share URI** like `snow://skill_catalog/\"USER$<you>@TRICONHOMES.COM\".SKILL_SHARING.COCO_DE_GUIDE/versions/version$1/`. Copy it exactly, quotes included.")
+render_expected("CoCo reports a **share URI** like `snow://skill_catalog/\"USER$<you>@TRICONHOMES.COM\".SKILL_SHARING.COCO_DE_GUIDE`, and notes that only you can read it so far. Copy the URI exactly, quotes included.")
 
-render_prompt("Prompt 4.1", "How Would a Teammate Install It?", """Show me the share URI of the coco-de-guide plugin I just published, and explain in three steps how a teammate installs it from the Plugins Catalog. Don't change anything.""")
+render_prompt("Prompt 4.1", "How Would a Teammate Install It?", """Show me the share URI of the coco-de-guide plugin I just published and which roles can read it. Explain in three steps how a teammate installs it from the Plugins Catalog, and what I'd need to grant first. Don't change anything.""")
+render_whats_happening("""Publishing and **sharing** are separate steps. That's the governance point: like any Snowflake object, the plugin is private until you **grant READ** to a role.
+In real life you'd grant it to a team role, e.g. *grant READ to DATA_ENGINEERING*. CoCo can do this for you when you ask. Skip it in the lab, so 30 plugins don't flood everyone's catalog.""")
 render_explanation("Installing a catalog plugin (the teammate's side)", """
-1. **Settings** → **Plugins** → **+** → **Add from Plugins Catalog**
+0. First, the owner grants **READ** on the plugin to one of the teammate's roles (ask CoCo: *grant READ on my coco-de-guide plugin to role X*).
+1. **Settings** → **Plugins** → **+** → **Add from Plugins Catalog**, or just paste the URI into the CoCo chat
 2. Paste the `snow://skill_catalog/...` URI → **Import**
 3. The plugin appears with a **CATALOG** badge. Later versions arrive with **Sync**.
 """)
