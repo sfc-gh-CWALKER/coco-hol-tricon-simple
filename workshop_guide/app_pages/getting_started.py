@@ -135,6 +135,13 @@ render_troubleshoot([
     ("*Workspace ... not allowed* / *blocked by feature policy*", "The account blocks the workspaces that Snowflake-managed dbt uses. Raise your hand; the admin must allow WORKSPACE in personal databases."),
     ("*Schema ... does not exist*", "Step 4 didn't finish. Paste Prompt 0.1 again."),
     ("It's slow (several minutes)", "30 people are building at once on one warehouse. Wait; the first run is the slowest."),
+    ("*self signed certificate in certificate chain* when uploading files",
+     "The corporate network (Netskope SSL inspection) is re-signing traffic. SQL still works; only the upload is blocked. "
+     "Fix: get the Netskope root certificate (`.pem`/`.crt`) from the location the facilitator shares, or export it from "
+     "`certmgr.msc` → Trusted Root Certification Authorities → Netskope → Export → Base-64 `.cer`. Then search the Start menu for "
+     "**Edit environment variables for your account**, add `NODE_EXTRA_CA_CERTS` = the file's full path, **fully quit CoCo Desktop** "
+     "(including the tray icon), reopen it and click Build again. Still stuck? Raise your hand."),
 ])
+st.info("**Tip:** run this Build in the first few minutes. If your network blocks it, you'll find out now, not in Module 2.", icon=":material/bolt:")
 render_check(f"""Check my setup: confirm the tables CUSTOMERS and ORDERS_SUMMARY exist in {LAB_DB}.{attendee_schema()} and show their row counts. Answer PASS or FAIL.""")
 render_catch_up("""My setup failed and the facilitator is busy. Read START_HERE.md and scripts/setup.sql, tell me in plain language which step failed and the one thing I should do next. Don't change any files.""")
