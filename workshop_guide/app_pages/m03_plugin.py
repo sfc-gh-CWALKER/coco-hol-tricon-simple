@@ -187,36 +187,34 @@ render_takeaway(
     """One switch gives a new team member the whole team setup. That's how onshore and offshore engineers start from the same standards on day one.""",
 )
 
-st.markdown("#### Step 6: Test the hook (facilitator demo)")
-render_guide_ref("Create a Custom Plugin → Test the Hook", "facilitator demo: on most Tricon laptops the hook can't run, so watch the screen")
-render_facilitator_demo(
-    "show the hook blocking a production deploy",
-    """On a typical Tricon Windows laptop the hook can't start, because `bash` isn't on CoCo's PATH. A hook that can't start is only logged, not blocking: it **fails open**.
-That's the lesson: **guardrails need testing on the machines that will run them.**""",
-    f"""
-**Before the session** (2 min): on your Mac, open your own lab folder in CoCo Desktop, complete Module 3 (or paste its *Catch me up* prompt), and run the pre-flight check from the lab repo:
-```
-facilitator/check_demos.sh ~/Downloads/tricon-coco-lab <your-connection>
-```
-It must end in **ALL DEMO CHECKS PASSED**. It runs the hook exactly as CoCo Desktop calls it, from the project folder, and needs `bash` and `jq`.
+st.markdown("#### Step 6: Test the hook (facilitator demo, optional for you)")
+render_guide_ref("Create a Custom Plugin → Test the Hook", "facilitator demo; attendees can try it at their own risk")
+st.error(":material/co_present: **Watch the facilitator's screen.** Want to try it yourself? Go ahead, but on many Tricon laptops the hook can't start (see below), so you may not see the block. Fixing that is on you: use the fix prompt below.")
+render_prompt("Prompt 3.5", "Try to Deploy to Production", """This is a test of our production-safety hook. Start a new chat for it.
+Use the bash tool to run exactly this command, and tell me what happens:
+echo dbt build --target prod
+(It's only an echo, so it can't change anything. It's here so the hook sees the text "dbt build --target prod".)""")
+render_expected("CoCo is **blocked before the command runs**: *[Hook] Tool execution blocked: direct production dbt runs are not allowed (--target prod). Deploy to production through the CI/CD pipeline instead.*")
+render_whats_happening("""The agent decided to run the command; the hook said no. **Prompts are suggestions; hooks are rules.**
+We use `echo` so nothing can go wrong even if the hook doesn't fire: the worst case is that a line of text gets printed.""")
+render_explanation("It printed the line instead of blocking? Fix it with CoCo (at your own risk)", """
+That means the hook **didn't start** on your machine, so it *failed open*. The usual cause on Windows: the hook runs `bash`, and `bash` isn't on CoCo's PATH.
 
-**On screen:**
-1. **Settings → Plugins → coco-de-guide**: show the card listing the skill, the **PreToolUse** hook and the agent.
-2. Open `{PLUGIN_DIR}/hooks/validate-bash.sh` and read the one `grep` line aloud: *any dbt command with --target prod, --target=prod or -t prod is blocked.*
-3. Start a **new chat** and paste the prompt below. It overrides AGENTS.md's "no terminal" rule for this one test; without that, CoCo may simply refuse, and the hook never gets a chance to fire.
-4. CoCo tries the `bash` tool, and the hook stops it: **"[Hook] Tool execution blocked: direct production dbt runs are not allowed..."**. CoCo then explains it can't do that and points to CI/CD.
-5. Say: *"The agent decided to run it. The hook said no. Prompts are suggestions; hooks are rules."*
+Paste this into CoCo:
+```
+My production-safety hook didn't block "echo dbt build --target prod".
+Read .cortex/plugins/coco-de-guide/hooks/hooks.json and hooks/validate-bash.sh,
+work out why the hook didn't run on this machine (for example bash not on PATH),
+and propose the smallest fix. Show me the change before you make it.
+Don't install anything.
+```
+CoCo can usually diagnose it and adjust `hooks.json`, for example by pointing it at Git Bash's full path if Git is installed. If there's no bash on the machine at all, the fix needs software installed, which is out of scope today. That's fine: the facilitator's demo shows the behaviour.
 
-**If CoCo refuses on its own instead** (it read AGENTS.md): that's guardrail layer one working. Say so, then show layer two directly in the terminal:
-```
-echo '{{"tool_input":{{"command":"dbt build --target prod"}}}}' | bash {PLUGIN_DIR}/hooks/validate-bash.sh; echo "exit=$?"
-```
-You get the block message and `exit=2`, which is the code CoCo treats as *block*.
-""",
-)
-render_prompt("Prompt 3.5", "Try to Deploy to Production (facilitator only)", """This is a test of our production-safety hook. Use the bash tool to run exactly this command, and tell me what happens:
-dbt build --target prod""")
-render_expected("The facilitator's CoCo is **blocked** before the command runs, with a message that direct production dbt runs aren't allowed and to use CI/CD.")
+**The lesson:** guardrails need testing on the machines that will actually run them.
+""")
+render_presenter("""**Facilitator (everything up to here is already done on your machine):** open a **new chat** and paste Prompt 3.5. Expect the block message.
+Say: *"The agent decided to run it. The hook said no. Prompts are suggestions; hooks are rules."*
+If CoCo refuses before trying (it read AGENTS.md), say that's guardrail layer one working, and ask: *"Use the bash tool anyway, it's only an echo."*""")
 render_guardrail("Even with clear instructions, agents generate actions on the fly. Hooks are the hard guardrail that holds no matter what the agent decides.")
 render_explanation("Two limits of this hook (good discussion points)", """
 - **It only blocks what it matches.** It catches `--target prod` and `--target=prod`, and the short flag `-t prod`. Every pattern you forget is a gap, so test guardrails like code.
