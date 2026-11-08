@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import streamlit as st
 
 from components import (
@@ -151,11 +153,7 @@ It should summarize performance metrics per supplier from the supplier and linei
 Include total orders, total revenue, and average discount."""
 render_prompt("Prompt 2.3", "Build a Model with the Skill", PROMPT_2_3)
 st.markdown("Click **Keep** on each new or changed file. Then CoCo pauses and shows a **Build** card in the chat:")
-st.info("""**Build**: *Model and tests are written. Please click Build on the Project Action Bar (dbt build --select supplier_performance), then let me know when it finishes.*
-
-○ **Build finished**: I'll read target/run_results.json and report  
-○ Skip for now  
-○ Other…""", icon=":material/pending_actions:")
+st.image(str(Path(__file__).resolve().parent.parent / "static" / "build_card.png"), caption="The Build card in the CoCo chat: run the build, then choose Build finished and Submit.", width=520)
 st.markdown("""
 1. **Leave the card open.** Go to the Project Action Bar at the bottom and run the build (below).
 2. Wait for the Output panel to say **✓ Completed**.
