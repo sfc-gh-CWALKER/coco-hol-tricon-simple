@@ -187,9 +187,9 @@ render_takeaway(
     """One switch gives a new team member the whole team setup. That's how onshore and offshore engineers start from the same standards on day one.""",
 )
 
-st.markdown("#### Step 6: Test the hook (facilitator demo, optional for you)")
-render_guide_ref("Create a Custom Plugin → Test the Hook", "facilitator demo; attendees can try it at their own risk")
-st.error(":material/co_present: **Watch the facilitator's screen.** Want to try it yourself? Go ahead, but on many Tricon laptops the hook can't start (see below), so you may not see the block. Fixing that is on you: use the fix prompt below.")
+st.markdown("#### Step 6: Test the hook (facilitator demo, try it too if you like)")
+render_guide_ref("Create a Custom Plugin → Test the Hook", "facilitator demo; attendees can try it too")
+st.info(":material/co_present: **The facilitator runs this one on screen.** You're welcome to try it too. Heads-up: in testing on Tricon's environment the hook didn't always start, so it may not block on your laptop. If that happens, try the sample fix below; if it still doesn't work, no problem, just watch the facilitator's demo.")
 render_prompt("Prompt 3.5", "Try to Deploy to Production", """This is a test of our production-safety hook. Start a new chat for it.
 Use the bash tool to run exactly this command, and tell me what happens:
 echo dbt build --target prod
@@ -197,8 +197,8 @@ echo dbt build --target prod
 render_expected("CoCo is **blocked before the command runs**: *[Hook] Tool execution blocked: direct production dbt runs are not allowed (--target prod). Deploy to production through the CI/CD pipeline instead.*")
 render_whats_happening("""The agent decided to run the command; the hook said no. **Prompts are suggestions; hooks are rules.**
 We use `echo` so nothing can go wrong even if the hook doesn't fire: the worst case is that a line of text gets printed.""")
-render_explanation("It printed the line instead of blocking? Fix it with CoCo (at your own risk)", """
-That means the hook **didn't start** on your machine, so it *failed open*. The usual cause on Windows: the hook runs `bash`, and `bash` isn't on CoCo's PATH.
+render_explanation("It printed the line instead of blocking? Try this sample fix", """
+That just means the hook didn't start on your machine. It's a setup difference, not something you did wrong. The usual cause on Windows: the hook runs `bash`, and `bash` isn't on CoCo's PATH.
 
 Paste this into CoCo:
 ```
@@ -208,7 +208,7 @@ work out why the hook didn't run on this machine (for example bash not on PATH),
 and propose the smallest fix. Show me the change before you make it.
 Don't install anything.
 ```
-CoCo can usually diagnose it and adjust `hooks.json`, for example by pointing it at Git Bash's full path if Git is installed. If there's no bash on the machine at all, the fix needs software installed, which is out of scope today. That's fine: the facilitator's demo shows the behaviour.
+CoCo can usually diagnose it and adjust `hooks.json`, for example by pointing it at Git Bash's full path if Git is installed. If it still doesn't block, leave it there and watch the facilitator's demo; you'll see exactly how it should behave.
 
 **The lesson:** guardrails need testing on the machines that will actually run them.
 """)
