@@ -46,17 +46,21 @@ with st.container(border=True):
 2. Click the **coco-de-guide** card → **Publish to Plugins Catalog** (cloud-upload icon).
 3. A chat opens and the `share-skill-and-plugin` skill runs. Confirm the **name** and **description**.
    If it says your `plugin.json` has **no description**, choose **Let me provide my own summary** → **Submit**, then paste this into the chat and send it:
-4. When it asks who can access it, keep the default for the lab: **only you**. The link alone doesn't give anyone access. A teammate also needs **READ** granted to one of their roles (see below).
+4. CoCo may ask a couple of setup questions; accept the suggested defaults.
+5. When the **Audience** card asks *How should this be shared?*, choose **Privately via a share link** → **Submit**. Anyone at Tricon with the link can install it, but it doesn't show up in everyone's catalog, so 50 lab copies don't flood it.
+   Don't pick *Everyone can see it* or *To a specific ROLE* for the lab.
 """)
 st.caption("Description to paste in step 3, only if CoCo asks for one:")
 st.code("Tricon data engineering standards for dbt on Snowflake: a new-dbt-model skill, a production-safety hook and a read-only dbt-review agent.", language=None)
-render_expected("CoCo reports a **share URI** like `snow://skill_catalog/\"USER$<you>@TRICONHOMES.COM\".SKILL_SHARING.COCO_DE_GUIDE`, and notes that only you can read it so far. Copy the URI exactly, quotes included.")
+render_expected("CoCo reports a **share URI** like `snow://skill_catalog/\"USER$<you>@TRICONHOMES.COM\".SKILL_SHARING.COCO_DE_GUIDE`, and notes that it's shared privately by link. Copy the URI exactly, quotes included.")
 
-render_prompt("Prompt 4.1", "How Would a Teammate Install It?", """Show me the share URI of the coco-de-guide plugin I just published and which roles can read it. Explain in three steps how a teammate installs it from the Plugins Catalog, and what I'd need to grant first. Don't change anything.""")
-render_whats_happening("""Publishing and **sharing** are separate steps. That's the governance point: like any Snowflake object, the plugin is private until you **grant READ** to a role.
-In real life you'd grant it to a team role, e.g. *grant READ to DATA_ENGINEERING*. CoCo can do this for you when you ask. Skip it in the lab, so 30 plugins don't flood everyone's catalog.""")
+render_prompt("Prompt 4.1", "How Would a Teammate Install It?", """Show me the share URI of the coco-de-guide plugin I just published and which roles can read it. Explain in three steps how a teammate installs it from the Plugins Catalog, and whether I need to grant anything else for them. Don't change anything.""")
+render_whats_happening("""Who can use the plugin is controlled like any other Snowflake object, with **READ** grants. You chose the middle option:
+- **Everyone (PUBLIC):** READ to everyone, and it appears in everyone's catalog.
+- **Private share link (lab choice):** READ to everyone, but it's hidden from browsing. Only people you send the link to will find it.
+- **A specific role:** READ only to a team role (e.g. *DATA_ENGINEERING*), and it appears in their catalog. This is what you'd do for real after the workshop.""")
 render_explanation("Installing a catalog plugin (the teammate's side)", """
-0. First, the owner grants **READ** on the plugin to one of the teammate's roles (ask CoCo: *grant READ on my coco-de-guide plugin to role X*).
+0. With the lab's *private share link* choice, there's nothing to grant: the teammate just needs the link. (For a team role instead, ask CoCo: *grant READ on my coco-de-guide plugin to role X*.)
 1. **Settings** → **Plugins** → **+** → **Add from Plugins Catalog**, or just paste the URI into the CoCo chat
 2. Paste the `snow://skill_catalog/...` URI → **Import**
 3. The plugin appears with a **CATALOG** badge. Later versions arrive with **Sync**.
@@ -64,12 +68,12 @@ render_explanation("Installing a catalog plugin (the teammate's side)", """
 render_troubleshoot([
     ("*Insufficient privileges* / can't create SKILL_SHARING", "Your account may restrict publishing. Skip to Part B; the facilitator shows the publish flow."),
     ("No Publish button on the card, or the link with `@` in it doesn't import", "Update CoCo Desktop to **1.21.3 or later** (Help → Check for Updates)."),
-    ("CoCo asks to make it public to everyone", "Say no for the lab. Keep it reachable by link only."),
+    ("The Audience card offers three options", "Choose **Privately via a share link** for the lab."),
 ])
 
 # ---------------------------------------------------------------- Part B
 render_takeaway(
-    """Publishing turned your plugin folder into a **Snowflake object** in your personal database, with a share link and versions. It stays private until you grant READ to a role.
+    """Publishing turned your plugin folder into a **Snowflake object** in your personal database, with a share link and versions. Who can use it is a READ grant, like any Snowflake object: today, anyone with the link.
 Everyone publishes the same plugin name, but each copy lives in its own personal database (`USER$<you>`), so nothing collides or gets overwritten.""",
     """Standards are now distributed like any other governed Snowflake asset: one team owns the plugin, grants it to the data engineering role, and everyone syncs the latest version. No zip files, no "which copy is current?".""",
 )
