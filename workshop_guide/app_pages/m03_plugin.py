@@ -55,12 +55,21 @@ CoCo finds plugins in `.cortex/plugins/` automatically, once the folder is **tru
 render_new_chat()
 
 # ---------------------------------------------------------------- Step 1
-st.markdown("#### Step 1: Move the skill into the plugin")
-render_guide_ref("Create a Custom Plugin → Move the Skill into the Plugin", "CoCo moves the files, instead of mkdir/mv in a terminal")
+st.markdown("#### Step 1: Copy the skill into the plugin, then delete the original")
+render_guide_ref("Create a Custom Plugin → Move the Skill into the Plugin", "CoCo copies the file and you delete the old folder in the Explorer, instead of mkdir/mv in a terminal")
 render_whats_happening("Same skill, new home. Inside the plugin it gets versioned and shared together with the hook and reviewer you add next.")
-render_prompt("Prompt 3.1", "Move the Skill", f"""Move the folder .snowflake/cortex/skills/new-dbt-model into {PLUGIN_DIR}/skills/ so the skill ends up at {PLUGIN_DIR}/skills/new-dbt-model/SKILL.md.
-Then delete the now-empty .snowflake folder. Don't change the skill's content. Do not use the cortex CLI or a terminal — move the files directly.""")
-render_expected(f"`{PLUGIN_DIR}/skills/new-dbt-model/SKILL.md` exists, and `.snowflake/` is gone.")
+render_prompt("Prompt 3.1", "Copy the Skill into the Plugin", f"""Copy the skill file .snowflake/cortex/skills/new-dbt-model/SKILL.md to {PLUGIN_DIR}/skills/new-dbt-model/SKILL.md.
+Don't change its content. Don't use a terminal or the cortex CLI, and don't try to delete anything: I'll delete the old folder myself. Tell me when the copy is done.""")
+st.markdown("""Then **you** remove the old copy, so the skill exists in only one place:
+1. In the **Explorer** (left), right-click the **`.snowflake`** folder → **Delete** → confirm.
+2. That folder only contains the original `SKILL.md`, which is now inside the plugin.""")
+render_whats_happening("""Why don't we ask CoCo to delete it? Its file tools can **create and edit** files but not delete them, and your AGENTS.md tells it not to use a terminal. So CoCo copies, you delete. If CoCo offers to run `rm -rf .snowflake`, say **no** and delete it in the Explorer instead.""")
+render_expected(f"`{PLUGIN_DIR}/skills/new-dbt-model/SKILL.md` exists, and the `.snowflake/` folder is gone from the Explorer.")
+render_troubleshoot([
+    ("CoCo says the original is still there and offers to use the terminal", "Reply *No, I'll delete it myself*, then delete `.snowflake` in the Explorer."),
+    ("You can't see `.snowflake` in the Explorer", "It may already be gone. If you're on Windows File Explorer instead, turn on **View → Show → Hidden items**."),
+    ("You deleted `.snowflake` before the copy finished", "Run the Module 2 catch-up prompt to restore the skill, then copy it again."),
+])
 
 # ---------------------------------------------------------------- Step 2
 render_takeaway(
@@ -234,7 +243,7 @@ render_troubleshoot([
     ("CoCo reviews the models itself instead of using the agent", "Ask: *Run this with the dbt-review subagent.*"),
 ])
 render_check(f"""Check Module 3, change nothing: {PLUGIN_DIR} contains .cortex-plugin/plugin.json, skills/new-dbt-model/SKILL.md, hooks/hooks.json, hooks/validate-bash.sh and agents/dbt-review.md; dbt-review's tools are only read, grep and glob. PASS or FAIL for each.""")
-render_catch_up(f"""Catch me up on Module 3: copy everything in solutions/m3_plugin/coco-de-guide/ (including the hidden .cortex-plugin folder) to {PLUGIN_DIR}/, and delete .snowflake/ if it exists. Then tell me to check Settings → Plugins.""")
+render_catch_up(f"""Catch me up on Module 3: copy everything in solutions/m3_plugin/coco-de-guide/ (including the hidden .cortex-plugin folder) to {PLUGIN_DIR}/, Don't delete anything or use a terminal. Then tell me to delete the .snowflake folder in the Explorer if it exists, and to check Settings → Plugins.""")
 
 render_takeaway(
     """The reviewer ran by itself and returned a table per model with PASS, or the exact fixes needed.""",
