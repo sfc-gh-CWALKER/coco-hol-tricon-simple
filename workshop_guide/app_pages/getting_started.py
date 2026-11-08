@@ -7,6 +7,7 @@ from components import (
     LAB_DB,
     LAB_ROLE,
     MIN_COCO_NOTE,
+    DBT_VERSION,
     attendee_schema,
     render_build_click,
     render_catch_up,
@@ -89,6 +90,17 @@ with st.container(border=True):
 
 That's the only thing you install today.
 """)
+    upd_text, upd_img = st.columns([3, 2], gap="large")
+    with upd_text:
+        st.markdown("""
+3. **Check for updates, even if you just installed it.** The lab needs the latest version.
+   - **macOS:** **Cortex Code** menu (top left) → **Check for Updates…**
+   - **Windows:** **Help** → **Check for Updates**
+4. If an update is offered, install it and let CoCo Desktop restart.
+""")
+        st.warning(f"**Don't skip this.** Older versions are missing features the lab uses. You need {MIN_COCO_NOTE.split(' (')[0]}.", icon=":material/system_update:")
+    with upd_img:
+        st.image(str(Path(__file__).resolve().parent.parent / "static" / "check_for_updates.png"), caption="macOS: Cortex Code → Check for Updates…")
 
 # ---------------------------------------------------------------- Step 2
 st.markdown("#### Step 2: Sign in")
@@ -153,6 +165,14 @@ Finish with one line: READY, or NOT READY plus the exact reason."""
 
 # ---------------------------------------------------------------- Step 5
 st.markdown("#### Step 5: Your first dbt build, in Snowflake")
+with st.container(border=True):
+    st.markdown(f"""
+Everything for dbt happens in the **Project Action Bar** at the **bottom** of the CoCo Desktop window (boxed in red):
+- **Left:** the project, **tricon-coco-lab**
+- **Middle (sliders icon):** run options. Open it and set **dbt Version** to **dbt {DBT_VERSION}**
+- **Right:** the **▶ Run** button and the **Snowflake** icon, which shows dbt runs inside Snowflake
+""")
+    st.image(str(Path(__file__).resolve().parent.parent / "static" / "coco_action_bar.png"), caption=f"The Project Action Bar at the bottom of CoCo Desktop. Set dbt Version to {DBT_VERSION} in the run options (sliders icon).")
 render_build_click("Build")
 render_expected(f"The run ends with **success** (no errors) and the Lineage view shows `customers` and `orders_summary`. Two tables now exist in `{LAB_DB}.{attendee_schema()}`.")
 render_troubleshoot([
