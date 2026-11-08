@@ -45,8 +45,11 @@ with st.container(border=True):
 1. **Settings** gear (bottom of the left sidebar) → **Plugins**.
 2. Click the **coco-de-guide** card → **Publish to Plugins Catalog** (cloud-upload icon).
 3. A chat opens and the `share-skill-and-plugin` skill runs. Confirm the **name** and **description**.
+   If it says your `plugin.json` has **no description**, choose **Let me provide my own summary** → **Submit**, then paste this into the chat and send it:
 4. When it asks who can access it, keep the default for the lab: **only you**. The link alone doesn't give anyone access. A teammate also needs **READ** granted to one of their roles (see below).
 """)
+st.caption("Description to paste in step 3, only if CoCo asks for one:")
+st.code("Tricon data engineering standards for dbt on Snowflake: a new-dbt-model skill, a production-safety hook and a read-only dbt-review agent.", language=None)
 render_expected("CoCo reports a **share URI** like `snow://skill_catalog/\"USER$<you>@TRICONHOMES.COM\".SKILL_SHARING.COCO_DE_GUIDE`, and notes that only you can read it so far. Copy the URI exactly, quotes included.")
 
 render_prompt("Prompt 4.1", "How Would a Teammate Install It?", """Show me the share URI of the coco-de-guide plugin I just published and which roles can read it. Explain in three steps how a teammate installs it from the Plugins Catalog, and what I'd need to grant first. Don't change anything.""")

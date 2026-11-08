@@ -1,6 +1,6 @@
 {
   "name": "coco-de-guide",
-  "description": "dbt/Snowflake data engineering plugin for the CoCo DE Guide",
+  "description": "Tricon data engineering standards for dbt on Snowflake: a new-dbt-model skill, a production-safety hook and a read-only dbt-review agent.",
   "version": "1.0.0",
   "author": { "name": "Tricon CoCo Lab" },
   "skills": ["./skills"],

@@ -83,6 +83,7 @@ render_whats_happening("`plugin.json` is the plugin's label: its name, version, 
 render_prompt("Prompt 3.2", "Create the Manifest", f"""Create a CoCo plugin manifest for this project at {PLUGIN_DIR}/.cortex-plugin/plugin.json.
 The manifest must include all of the following fields:
 - name: "coco-de-guide"
+- description: "Tricon data engineering standards for dbt on Snowflake: a new-dbt-model skill, a production-safety hook and a read-only dbt-review agent."
 - version: 1.0.0
 - author: me
 - skills: pointing to ./skills
@@ -96,7 +97,7 @@ what the plugin includes.
 Do not use the cortex CLI — write the files directly.""")
 st.code("""{
   "name": "coco-de-guide",
-  "description": "dbt/Snowflake data engineering plugin for the CoCo DE Guide",
+  "description": "Tricon data engineering standards for dbt on Snowflake: a new-dbt-model skill, a production-safety hook and a read-only dbt-review agent.",
   "version": "1.0.0",
   "author": { "name": "<YOUR_NAME>" },
   "skills": ["./skills"],
