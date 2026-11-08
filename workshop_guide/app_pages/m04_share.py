@@ -2,6 +2,9 @@ import streamlit as st
 
 from components import (
     ORIGINAL_APP,
+    LAB_DB,
+    KIT_NAME,
+    attendee_schema,
     render_expected,
     render_explanation,
     render_takeaway,
@@ -145,6 +148,24 @@ render_explanation("The whole journey, in one table", """
 | 3 | Plugin: skill + hook + subagent | Packaged, versioned, with a hard production guardrail |
 | 4 | Catalog + CI/CD | Shared with governance; standards enforced on every change |
 """)
+
+# ---------------------------------------------------------------- Reset (optional)
+st.markdown("### Optional: reset your lab work")
+st.markdown(f"""Done with the lab and want to clean up, or want to run it again from scratch? Paste this into a **new chat** in CoCo. It lists what it will remove and **waits for you to say yes** before dropping anything.
+Only do this once you're finished: Build Week doesn't need any of these lab objects.""")
+render_prompt("Prompt R.1", "Reset My Lab Work", f"""Reset my Tricon CoCo lab work in Snowflake. First, only list what exists, and change nothing:
+1. The schema {LAB_DB}.{attendee_schema()} and the tables in it.
+2. The plugin COCO_DE_GUIDE in my personal database (USER$<my user>.SKILL_SHARING), if I published it.
+3. Any workspace in my personal database's PUBLIC schema whose name starts with coco_smws_tricon_coco_lab (dbt creates it when I click Build).
+Show me that list with the exact DROP statement for each, and ask me to confirm.
+After I say yes: run only those DROP statements, nothing else. Don't touch any other schema, workspace or plugin, and don't use a terminal.
+Finally, tell me to close this folder and delete the {KIT_NAME} folder and its .zip myself in my file explorer.""")
+render_expected("CoCo lists your schema, your plugin and the lab workspace, waits for **yes**, drops them, then reminds you to delete the lab folder yourself. To start over, download the lab kit again from **Getting Started**.")
+render_troubleshoot([
+    ("CoCo wants to drop something not on the list", "Say **no**, and ask it to drop only the three lab items."),
+    ("*Insufficient privileges* on the plugin or workspace", "Make sure your role is DEMO_ROLE, or ask the facilitator. The schema is the important one."),
+    ("CoCo can't delete the lab folder", "Expected: CoCo doesn't delete local files. Delete it yourself in your file explorer."),
+], title="Reset didn't go as expected?")
 
 render_presenter("""
 **Close with Jeremiah's line:** "Anyone can get an AI agent to produce a result. Professionals ensure the right result, every time." Then walk the table above.
