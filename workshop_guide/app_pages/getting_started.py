@@ -175,7 +175,7 @@ Everything for dbt happens in the **Project Action Bar** at the **bottom** of th
 
 When it finishes, the **Output** panel ends with **`Done. PASS=2 ... ERROR=0`** and **✓ Completed**.
 """)
-    st.image(str(Path(__file__).resolve().parent.parent / "static" / "coco_action_bar.png"), caption=f"The Project Action Bar at the bottom of CoCo Desktop. Set dbt Version to {DBT_VERSION} in the run options (sliders icon).")
+    st.image(str(Path(__file__).resolve().parent.parent / "static" / "coco_action_bar.png"), caption=f"Bottom of CoCo Desktop: sliders icon open, dbt Version {DBT_VERSION}, command dbt build, then click Run. With your lab folder open, the left side shows tricon-coco-lab and profile dev.")
 render_build_click("Build")
 render_expected(f"The run ends with **success** (no errors) and the Lineage view shows `customers` and `orders_summary`. Two tables now exist in `{LAB_DB}.{attendee_schema()}`.")
 render_troubleshoot([
