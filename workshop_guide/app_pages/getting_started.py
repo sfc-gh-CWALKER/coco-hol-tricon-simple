@@ -49,17 +49,30 @@ It comes in three forms. Today we use **CoCo Desktop**, because it supports ever
 
 with st.expander(":material/school: New to dbt? The 2-minute version", expanded=True):
     st.markdown("""
-**dbt** turns SQL `SELECT` statements into tables, in the right order, with tests. That's all you need for today.
+**What it is:** dbt (data build tool) is the **T** in ELT. The data is already loaded into Snowflake; dbt **transforms** it.
+You write a plain SQL `SELECT`, and dbt turns it into a table in Snowflake, builds tables in the right order, and checks the results with tests.
 
-| Word | Means | In your lab folder |
+**Why teams use it instead of loose SQL scripts:** every transformation is a file you can version in Git, review, reuse and test.
+dbt works out which table depends on which, so you never have to run scripts in the right order by hand.
+
+**How one run works:**
+1. dbt reads your `.sql` files and fills in the `{{ ... }}` bits with real Snowflake table names (this is called *compiling*).
+2. It runs that SQL in Snowflake, creating each model as a **table** (this project's setting in `dbt_project.yml`; dbt can also create views).
+3. It runs your tests. A test is just a query that looks for bad rows: **no rows back = pass**.
+
+| Word | In plain English | Where to find it in your lab folder |
 |---|---|---|
-| **Model** | One `.sql` file = one table dbt builds | `models/customers.sql`, `models/orders_summary.sql` |
-| **Source** | Raw data dbt reads from (here: Snowflake's built-in TPC-H sample sales data) | `models/_sources.yml` |
-| **`source()`** | How a model points at raw data, instead of typing the full table name | `{{ source('tpch', 'orders') }}` |
-| **Test** | A rule the data must pass, e.g. *no duplicate keys* | `models/_schema.yml` (CoCo creates it in Module 2) |
-| **Build** | Create every table, then run every test | The **Build** button at the bottom of CoCo Desktop |
+| **Project** | The folder dbt works in, plus its settings | `dbt_project.yml` (name `tricon_coco_lab`, models built as tables) |
+| **Source** | The raw tables dbt reads but never changes. Here: Snowflake's free TPC-H sample sales data | `models/_sources.yml` lists them once: customer, orders, lineitem… |
+| **Model** | One `.sql` file containing one `SELECT` = one table dbt builds. The file name becomes the table name | `models/customers.sql` → table `CUSTOMERS` (customers joined to their nation and region) |
+| **`source()`** | A shortcut that points at a raw table by its short name, so the full name lives in one place and dbt knows the dependency | `customers.sql` uses `{{ source('tpch', 'customer') }}` |
+| **Hard-coded name** | Typing the full table name instead. It works, but dbt can't track it, and every file breaks if the source moves | `orders_summary.sql` uses `SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.ORDERS`. **You fix this in Module 1** |
+| **Test** | A rule the data must pass, e.g. *order_key is never empty and never duplicated* | `models/_schema.yml`. Doesn't exist yet; CoCo writes it in Module 2 |
+| **Build** | Build every model **and** run every test in one go (`dbt build` = run + test) | The **Build** button on the Project Action Bar at the bottom of CoCo Desktop |
+| **Profile** | Which Snowflake account, role and schema to build into | `dbt_projects_profiles.yml` (already points at your schema) |
 
-**The data:** TPC-H, a standard sample of customers, orders, line items and suppliers that's in every Snowflake account. Your tables land in **your own schema**, so nobody overwrites anyone.
+**The data:** TPC-H, a standard sample of customers, orders, line items and suppliers that ships with every Snowflake account (`SNOWFLAKE_SAMPLE_DATA`). It's read-only and contains no Tricon data.
+Your tables land in **your own schema**, so nobody overwrites anyone. For Build Week, swap the source to Tricon tables and the same pattern applies.
 """)
 
 if not setup_complete():
