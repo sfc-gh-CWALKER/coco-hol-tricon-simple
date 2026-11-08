@@ -170,7 +170,10 @@ with st.container(border=True):
 Everything for dbt happens in the **Project Action Bar** at the **bottom** of the CoCo Desktop window (boxed in red):
 - **Left:** the project, **tricon-coco-lab**
 - **Middle (sliders icon):** run options. Open it and set **dbt Version** to **dbt {DBT_VERSION}**
+- **Command box:** choose **dbt build**, not *dbt run*. Build creates the tables **and** runs the tests.
 - **Right:** the **▶ Run** button and the **Snowflake** icon, which shows dbt runs inside Snowflake
+
+When it finishes, the **Output** panel ends with **`Done. PASS=2 ... ERROR=0`** and **✓ Completed**.
 """)
     st.image(str(Path(__file__).resolve().parent.parent / "static" / "coco_action_bar.png"), caption=f"The Project Action Bar at the bottom of CoCo Desktop. Set dbt Version to {DBT_VERSION} in the run options (sliders icon).")
 render_build_click("Build")
