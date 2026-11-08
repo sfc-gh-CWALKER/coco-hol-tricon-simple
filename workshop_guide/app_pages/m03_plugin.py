@@ -156,7 +156,7 @@ for the correct agent definition format and frontmatter schema.
 Create a dbt-review subagent at {PLUGIN_DIR}/agents/dbt-review.md.
 The subagent should:
 - Review every dbt model file in models/
-- Check target/run_results.json to see whether the last build and its tests passed. It is large, so grep it for "status" and "unique_id" instead of reading it whole. If the file doesn't exist, report that check as N/A: "no build results yet: click Build", not FAIL
+- Check target/run_results.json to see whether the last build and its tests passed. It is large, so grep it for "status" and "unique_id" instead of reading it whole. Don't use glob to look for it: target/ is gitignored, so glob never finds it. Grep the path target/run_results.json directly, and only if grep says the file doesn't exist, report that check as N/A: "no build results yet: click Build", not FAIL
 - Verify that each convention from the new-dbt-model skill is met
 - Produce a concise PASS/FAIL report per convention with specific remediation steps for any failures
 - For build fixes, the remediation is "click Build on the Project Action Bar"; never suggest dbt terminal commands
@@ -238,6 +238,7 @@ render_troubleshoot([
     ("coco-de-guide isn't in Settings → Plugins", "Click **↻**. Check `" + PLUGIN_DIR + "/.cortex-plugin/plugin.json` exists (note both dots). Then trust the folder."),
     ("Facilitator: the prod command ran anyway", "Check the plugin is **on**, `hooks.json` uses matcher `bash` (lowercase), and CoCo has the **lab folder** open (the hook path is relative). Rerun `facilitator/check_demos.sh`."),
     ("Facilitator: CoCo refused without trying", "AGENTS.md doing its job. Show the hook directly with the terminal command in the runbook."),
+    ("Build check says **N/A** even after you clicked Build", "The agent looked with glob, which can't see the gitignored `target/` folder. Ask: *Update agents/dbt-review.md so the build check greps target/run_results.json directly instead of using glob, and only reports N/A if grep says the file doesn't exist.* Then run the review again."),
     ("CoCo reviews the models itself instead of using the agent", "Ask: *Run this with the dbt-review subagent.*"),
 ])
 render_check(f"""Check Module 3, change nothing: {PLUGIN_DIR} contains .cortex-plugin/plugin.json, skills/new-dbt-model/SKILL.md, hooks/hooks.json, hooks/validate-bash.sh and agents/dbt-review.md; dbt-review's tools are only read, grep and glob. PASS or FAIL for each.""")
