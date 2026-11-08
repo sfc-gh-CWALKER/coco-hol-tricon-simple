@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import streamlit as st
 
 from components import (
@@ -91,16 +93,26 @@ That's the only thing you install today.
 # ---------------------------------------------------------------- Step 2
 st.markdown("#### Step 2: Sign in")
 with st.container(border=True):
-    st.markdown(f"""
-1. In CoCo Desktop, add a Snowflake connection. Your facilitator will put the **account identifier** on screen.
-2. Authentication: **Browser / SSO**. Sign in with your Tricon account when the browser opens.
+    form_col, img_col = st.columns([3, 2], gap="large")
+    with form_col:
+        st.markdown("1. In CoCo Desktop, open **Sign in to Snowflake** (add a connection) and fill it in:")
+        st.markdown("**Account identifier** (copy this):")
+        st.code("BGMSATT-STA98695", language=None)
+        st.markdown("**Connection name:** leave the auto-filled value.")
+        st.markdown("**Username** (type your own):")
+        st.code("<your-email>@triconhomes.com", language=None)
+        st.warning("**Add your username.** It's your full Tricon email address, e.g. `jsmith@triconhomes.com`. The form won't connect without it.", icon=":material/person:")
+        st.markdown(f"""
+2. **Authentication:** choose **SSO**, then sign in with your Tricon account when the browser opens.
 3. Click the connection name at the top → **Change Role** → **{LAB_ROLE}**.
 """)
+    with img_col:
+        st.image(str(Path(__file__).resolve().parent.parent / "static" / "sign_in.png"), caption="The Sign in to Snowflake form in CoCo Desktop")
     render_expected(f"The top bar shows your connection with role **{LAB_ROLE}**.")
     render_troubleshoot([
         (f"{LAB_ROLE} isn't in the role list", "Raise your hand. The admin grants it in a minute; don't continue without it."),
         ("Browser didn't open", "Click **Browser didn't open?** and open the link yourself."),
-        ("*Account not found*", "Check the account identifier on the facilitator's screen (`orgname-accountname`)."),
+        ("*Account not found*", "Paste the account identifier exactly: `BGMSATT-STA98695`."),
     ])
 
 # ---------------------------------------------------------------- Step 3
