@@ -4,6 +4,7 @@ from components import (
     ORIGINAL_APP,
     render_expected,
     render_explanation,
+    render_takeaway,
     render_facilitator_demo,
     render_guide_ref,
     render_presenter,
@@ -64,6 +65,12 @@ render_troubleshoot([
 ])
 
 # ---------------------------------------------------------------- Part B
+render_takeaway(
+    """Publishing turned your plugin folder into a **Snowflake object** in your personal database, with a share link and versions. It stays private until you grant READ to a role.
+Everyone publishes the same plugin name, but each copy lives in its own personal database (`USER$<you>`), so nothing collides or gets overwritten.""",
+    """Standards are now distributed like any other governed Snowflake asset: one team owns the plugin, grants it to the data engineering role, and everyone syncs the latest version. No zip files, no "which copy is current?".""",
+)
+
 st.markdown("### Part B: Enforce standards automatically in CI/CD (facilitator demo)")
 render_guide_ref("Enforce Standards Automatically in CI/CD", "facilitator demo: needs a GitHub repo, a Snowflake token and network access that Tricon laptops and accounts don't have today")
 render_facilitator_demo(
@@ -111,6 +118,12 @@ with st.container(border=True):
 **Why the CLI here?** Desktop is for interactive work. The CLI runs headless in any CI system and uses the same plugin from `.cortex/plugins/`.
 """)
 st.markdown(f"Want to do it yourself after the workshop? The [full lab guide]({ORIGINAL_APP}) walks through it, with Git and a local dbt install.")
+
+render_takeaway(
+    """The same `dbt-review` subagent ran headless through the **CoCo CLI** in a CI pipeline, caught a teammate's change that broke the rules, and failed the pull request with the exact fix.""",
+    """This closes the loop: the standards you wrote in Module 1 are now enforced **automatically on every change**, not just when someone remembers to check.
+It's the target end state for Tricon's dbt workflow: AGENTS.md and skills to build right, hooks to stay safe, a reviewer in CI to keep it that way.""",
+)
 
 render_what_you_built([
     "coco-de-guide published to Snowflake's Plugins Catalog, with a share link for teammates",

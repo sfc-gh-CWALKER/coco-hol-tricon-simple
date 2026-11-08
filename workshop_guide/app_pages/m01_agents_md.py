@@ -9,6 +9,7 @@ from components import (
     render_check,
     render_expected,
     render_explanation,
+    render_takeaway,
     render_guide_ref,
     render_new_chat,
     render_presenter,
@@ -77,6 +78,13 @@ st.caption("Why the last line? CoCo has bundled skills that know the `cortex` CL
 st.caption("What's not here from the guide: the feature-branch and pull-request rules. There's no Git in this version, so we left them out.")
 
 # ---------------------------------------------------------------- Step 2
+render_takeaway(
+    """You gave CoCo your team's facts in plain English, and it turned them into a structured `AGENTS.md` at the project root. You reviewed it before it was saved.
+From now on CoCo **reads this file at the start of every chat** in this folder, so you don't have to repeat yourself.""",
+    """Today, a lot of team knowledge lives in people's heads: which schema to use, *always go through `_sources.yml`*, *dbt runs in Snowflake*. New joiners, offshore partners and AI agents all have to rediscover it.
+`AGENTS.md` writes it down once, in the repo, where it's versioned and reviewed like code. For Build Week: start every project with one.""",
+)
+
 st.markdown("#### Step 2: Validate the starter code against your conventions")
 render_guide_ref("Validate the Starter Code Against Your Conventions")
 render_whats_happening("The starter project was written **before** these rules existed, which is exactly what happens when you inherit someone's code. You ask CoCo to check the code against AGENTS.md and fix what's wrong.")
@@ -95,6 +103,12 @@ LEFT JOIN {{ source('tpch', 'lineitem') }} l ...""", language="sql")
 st.caption("Why it matters: if the raw data ever moves, you change one line in `_sources.yml` instead of hunting through every model. dbt can also draw the lineage diagram only when models use `source()`.")
 
 # ---------------------------------------------------------------- Step 3
+render_takeaway(
+    """You never told CoCo *what* was wrong. It compared the starter code with the rules in `AGENTS.md`, found `orders_summary.sql` reading raw tables by their full names, and proposed the `source()` fix for you to approve.""",
+    """This is how inherited code gets brought up to standard: the agent applies **your** rules, not its own guess, and a person approves every change.
+It's the same pattern you'd use on the dbt migration: point CoCo at legacy models, let it flag what breaks the conventions, review the fixes.""",
+)
+
 st.markdown("#### Step 3: Build to confirm nothing broke")
 render_guide_ref("Validate the Starter Code → run dbt build", "you click Build instead of typing dbt build in a terminal")
 render_build_click("Build")
@@ -110,7 +124,13 @@ render_troubleshoot([
 render_check(f"""Check Module 1, change nothing: AGENTS.md is at the project root and names schema {attendee_schema()}; no .sql file in models/ contains SNOWFLAKE_SAMPLE_DATA (models/_sources.yml is supposed to name it; that's where source() points); the last build in target/run_results.json succeeded. PASS or FAIL for each.""")
 render_catch_up("""Catch me up on Module 1: copy solutions/m1_AGENTS.md to AGENTS.md at the project root, and copy solutions/m1_orders_summary.sql over models/orders_summary.sql. Then tell me to click Build.""")
 
-render_explanation("Why this matters", """
+render_takeaway(
+    """The **Build** button ran dbt inside Snowflake and rebuilt both tables in your schema, confirming the fix didn't break anything.
+No local Python, no dbt install, no terminal.""",
+    """"Change, then build to prove it" is the habit that keeps pipelines trustworthy. Because dbt runs in Snowflake, every engineer (onshore or offshore) builds the same way with the same permissions, and there's nothing to set up on a laptop.""",
+)
+
+render_explanation("The big idea in Module 1", """
 CoCo wasn't told what the violation was or what the fix should look like. It read the conventions, read the code and connected the two.
 That's the value: not one dramatic prompt, but **every** prompt in the session grounded in your actual standards instead of the model's best guess.
 

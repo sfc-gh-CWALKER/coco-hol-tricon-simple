@@ -8,6 +8,7 @@ from components import (
     render_check,
     render_expected,
     render_explanation,
+    render_takeaway,
     render_guide_ref,
     render_new_chat,
     render_presenter,
@@ -64,7 +65,7 @@ For parameterized tests like accepted_values, nest all test parameters under an 
 render_prompt("Prompt 2.1", "Add Schema Tests (No Skill)", PROMPT_2_1)
 render_expected("A new `models/_schema.yml` with `not_null` and `unique` on `customer_key` and `order_key`, plus a few more tests. Click **Keep**.")
 render_build_click("Build")
-render_expected("**Success**, with every test passing (roughly 10 or more, depending on what CoCo chose).")
+render_expected("**Success**, with every test passing (about 20, depending on what CoCo chose: for example 22 = 2 models + 20 tests).")
 
 render_troubleshoot([
     ("A test on `order_status` fails", "TPC-H order statuses are **F, O, P**. Ask: *Fix the accepted_values for order_status to match the data.* The guide notes this: not every column that looks like a rule actually holds in TPC-H."),
@@ -73,12 +74,22 @@ render_troubleshoot([
     ("Build says 0 tests", "The file must be `models/_schema.yml`. Ask CoCo to move it there, then Build again."),
 ])
 
-render_explanation("What this demonstrates", """
+render_takeaway(
+    """Without being told the keys or how dbt tests work, CoCo wrote `models/_schema.yml` with around **20 tests**, for example:
+- **not_null** and **unique** on the primary keys (`customer_key`, `order_key`)
+- **accepted_values** on columns with a fixed list (market segment, region, order status, order priority)
+- **relationships**: every `orders_summary.customer_key` must exist in `customers`
+
+The exact number varies by run, because CoCo chooses the tests itself.
+
 CoCo added a full set of tests without being told the primary keys, how `_schema.yml` is laid out, or which test types exist. It already knew.
 
 But notice we had to name the file `_schema.yml` ourselves; left alone, CoCo picks `schema.yml`. Both are valid dbt; your team uses the underscore.
-That's the point: **the model knows the tool, not your team's choices.** It doesn't know you always use `dbt build`, require primary-key tests, or route raw tables through `_sources.yml`. Without being told, it handles those inconsistently between sessions. That's what a skill fixes.
-""")
+That's the point: **the model knows the tool, not your team's choices.** It doesn't know you always use `dbt build`, require primary-key tests, or route raw tables through `_sources.yml`. Without being told, it handles those inconsistently between sessions. That's what a skill fixes.""",
+    """Tests are what make a table **certified**: bad data fails the build instead of reaching a report. With TPC-H it's sample data; at Tricon the same tests would protect occupancy, rent roll and NOI.
+But notice that CoCo chose *its* tests. Your team's rules (primary-key tests are mandatory, always `dbt build`) need to be written down, which is the next step.""",
+)
+
 
 # ---------------------------------------------------------------- Step 2
 st.markdown("#### Step 2: Write the custom skill")
@@ -124,6 +135,12 @@ description: Create a new dbt model in this project. Use when adding a model for
 render_expected("A new `.snowflake/cortex/skills/new-dbt-model/SKILL.md`. Type `/` in the chat box: **new-dbt-model** appears in the list.")
 
 # ---------------------------------------------------------------- Step 3
+render_takeaway(
+    """A **skill** is a short Markdown file with your team's conventions and steps for one kind of task, here *building a new dbt model*. CoCo loads it automatically when a request matches its description.""",
+    """This is how a standard stops being a wiki page nobody reads. Write it once, and every engineer and every CoCo session follows it the same way.
+For Build Week, any task your team repeats (new model, new source, onboarding a Yardi table) is a good candidate for a skill.""",
+)
+
 st.markdown("#### Step 3: Invoke the skill to build a new model")
 render_guide_ref("Create a Custom Skill → Invoke the Skill to Build a New Model")
 render_whats_happening("""Now the payoff. You only describe the business ask: *a summary per supplier*. You don't repeat any rule.
@@ -144,6 +161,11 @@ render_troubleshoot([
 ])
 render_check("""Check Module 2, change nothing: models/_schema.yml has not_null and unique on every model's primary key; .snowflake/cortex/skills/new-dbt-model/SKILL.md exists; models/supplier_performance.sql uses source() only; the last build in target/run_results.json passed. PASS or FAIL for each.""")
 render_catch_up("""Catch me up on Module 2: copy solutions/m2_schema.yml to models/_schema.yml and solutions/m2_skill/SKILL.md to .snowflake/cortex/skills/new-dbt-model/SKILL.md. Then run Prompt 2.3 using that skill.""")
+
+render_takeaway(
+    """You only described the business ask, *a summary per supplier*. CoCo matched it to the skill and followed every rule without being reminded: `source()`, primary-key tests in `_schema.yml`, `dbt build`.""",
+    """Consistency at speed: a new model arrives already tested and already following the conventions, whoever (or whatever) wrote it. Reviewers spend their time on the business logic, not on style fixes.""",
+)
 
 render_explanation("Tip from the guide", """
 Resist the urge to put too much into one skill. A focused skill for *"create a new dbt model"* is more useful than a sprawling one for *"do everything dbt"*.

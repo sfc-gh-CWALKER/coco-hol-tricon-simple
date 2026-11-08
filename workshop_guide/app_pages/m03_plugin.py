@@ -5,6 +5,7 @@ from components import (
     render_check,
     render_expected,
     render_explanation,
+    render_takeaway,
     render_facilitator_demo,
     render_guardrail,
     render_guide_ref,
@@ -62,6 +63,11 @@ Then delete the now-empty .snowflake folder. Don't change the skill's content. D
 render_expected(f"`{PLUGIN_DIR}/skills/new-dbt-model/SKILL.md` exists, and `.snowflake/` is gone.")
 
 # ---------------------------------------------------------------- Step 2
+render_takeaway(
+    """The skill moved from your project folder into the plugin folder. It works exactly the same, but now it belongs to a package that can be versioned and shared.""",
+    """A skill in one person's project helps one person. Inside a plugin it can be shipped to the whole team, which is the point of the next steps.""",
+)
+
 st.markdown("#### Step 2: Create the plugin manifest")
 render_guide_ref("Create a Custom Plugin → Create the Plugin Manifest", "no 'consult the docs' line: the docs page doesn't list every field, so the prompt gives the exact manifest")
 render_whats_happening("`plugin.json` is the plugin's label: its name, version, and where to find its skills, agents and hooks.")
@@ -91,6 +97,11 @@ st.code("""{
 st.caption("Yours may differ slightly. If CoCo tries `cortex plugin ...` commands, remind it: *Do not use the cortex CLI — write the files directly.*")
 
 # ---------------------------------------------------------------- Step 3
+render_takeaway(
+    """`plugin.json` is the plugin's label: its name, version and where its skills, hooks and agents live. CoCo reads it to load everything at once.""",
+    """Versioning means everyone runs the same standards, and you can roll out a change (v1.1 adds a new rule) the way you'd ship any other code.""",
+)
+
 st.markdown("#### Step 3: Add a production safety hook")
 render_guide_ref("Create a Custom Plugin → Add a Production Safety Hook")
 render_whats_happening("""AI agents will run whatever you ask, including commands that write to **production**. A **PreToolUse hook** is a small script CoCo must run *before* every terminal command.
@@ -120,6 +131,11 @@ st.code(f"""{{
 }}""", language="json")
 
 # ---------------------------------------------------------------- Step 4
+render_takeaway(
+    """A **hook** is a small script that runs *before* CoCo uses a tool. This one checks every terminal command and blocks anything that targets production.""",
+    """This is a hard guardrail, not a polite request. Even if a prompt or a teammate asks for a production run, it can't happen from a laptop. Changes go to production through your normal release process, which keeps Security and audit comfortable as you scale AI use.""",
+)
+
 st.markdown("#### Step 4: Add a dbt review subagent")
 render_guide_ref("Create a Custom Plugin → Add a dbt Review Subagent", "reviews every model and reads the last Build's results, instead of git diff against origin/main and dbt build in a terminal; read-only tools")
 render_whats_happening("""A **subagent** runs a whole job by itself and hands back a report, like asking a colleague for a code review. A skill walks *with* you through a task.
@@ -141,6 +157,11 @@ It should use only the read, grep, and glob tools. Set the model to auto.""")
 render_expected(f"`{PLUGIN_DIR}/agents/dbt-review.md` with `name`, `description`, `tools` (read, grep, glob) and `model: auto` at the top.")
 
 # ---------------------------------------------------------------- Step 5
+render_takeaway(
+    """A **subagent** is a specialist CoCo hands a whole job to. `dbt-review` can only *read* files (no edits, no SQL), checks each model against the conventions and reports PASS or FAIL.""",
+    """It's a code reviewer that never gets tired and always applies the same checklist. Your senior engineers review logic, not formatting, and the same reviewer later runs in CI on every pull request (Module 4).""",
+)
+
 st.markdown("#### Step 5: Activate the plugin")
 render_guide_ref("Create a Custom Plugin → Activate the Plugin")
 with st.container(border=True):
@@ -152,6 +173,11 @@ with st.container(border=True):
 st.caption("Project plugins only switch on in a **trusted** folder. If it shows but is disabled: Command Palette → *Manage Workspace Trust*, or use the toggle.")
 
 # ---------------------------------------------------------------- Step 6
+render_takeaway(
+    """Turning the plugin on loads the skill, hook and subagent into CoCo together, for every chat in this project.""",
+    """One switch gives a new team member the whole team setup. That's how onshore and offshore engineers start from the same standards on day one.""",
+)
+
 st.markdown("#### Step 6: Test the hook (facilitator demo)")
 render_guide_ref("Create a Custom Plugin → Test the Hook", "facilitator demo: on most Tricon laptops the hook can't run, so watch the screen")
 render_facilitator_demo(
@@ -190,6 +216,11 @@ render_explanation("Two limits of this hook (good discussion points)", """
 st.caption("The script itself is tested: run directly with bash, it blocks all three prod forms and allows `--target dev`.")
 
 # ---------------------------------------------------------------- Step 7
+render_takeaway(
+    """The facilitator asked CoCo to run a production deployment, and the hook stopped it before it ran, with a clear reason.""",
+    """Guardrails only matter if you've seen them work. This is the evidence to show your security and platform leads: the agent is powerful, but production is protected.""",
+)
+
 st.markdown("#### Step 7: Try the subagent")
 render_guide_ref("Create a Custom Plugin → Try the Subagent Locally")
 render_whats_happening("The reviewer runs to completion by itself: it reads each model, checks the three conventions, reads the last build results, and gives you a PASS/FAIL table.")
@@ -204,6 +235,11 @@ render_troubleshoot([
 ])
 render_check(f"""Check Module 3, change nothing: {PLUGIN_DIR} contains .cortex-plugin/plugin.json, skills/new-dbt-model/SKILL.md, hooks/hooks.json, hooks/validate-bash.sh and agents/dbt-review.md; dbt-review's tools are only read, grep and glob. PASS or FAIL for each.""")
 render_catch_up(f"""Catch me up on Module 3: copy everything in solutions/m3_plugin/coco-de-guide/ (including the hidden .cortex-plugin folder) to {PLUGIN_DIR}/, and delete .snowflake/ if it exists. Then tell me to check Settings → Plugins.""")
+
+render_takeaway(
+    """The reviewer ran by itself and returned a table per model with PASS, or the exact fixes needed.""",
+    """Fast, consistent feedback before anything is merged. For Build Week, run `dbt-review` on your project before you demo it.""",
+)
 
 render_what_you_built([
     "coco-de-guide: one versioned plugin with your skill, a hook and a subagent",

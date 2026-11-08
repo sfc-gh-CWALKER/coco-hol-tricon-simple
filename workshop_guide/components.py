@@ -203,6 +203,17 @@ def render_explanation(title: str, body: str):
         st.markdown(personalize(body))
 
 
+def render_takeaway(demonstrates: str, why: str):
+    """End-of-step pair: what the step showed, and why it matters for the data team."""
+    left, right = st.columns(2)
+    with left:
+        with st.expander(":material/visibility: What this demonstrates"):
+            st.markdown(personalize(demonstrates))
+    with right:
+        with st.expander(":material/lightbulb: Why this matters"):
+            st.markdown(personalize(why))
+
+
 def render_guardrail(text: str):
     st.warning(f":material/verified_user: **A person approves.** {text}")
 
