@@ -166,6 +166,14 @@ Finish with one line: READY, or NOT READY plus the exact reason."""
 # ---------------------------------------------------------------- Step 5
 st.markdown("#### Step 5: Your first dbt build, in Snowflake")
 with st.container(border=True):
+    st.warning("""**Before your first Build: corporate certificate setup (Tricon laptops, one time).**
+Tricon's network (Netskope) re-signs secure traffic, which blocks CoCo's file upload with *self signed certificate in certificate chain*. Do this once:
+1. Save the **Netskope `.pem` file Surya sent you** somewhere permanent, e.g. `C:\\certs\\netskope.pem`. Don't leave it in Downloads.
+2. Open the Start menu, search **Edit environment variables for your account**, and under *User variables* click **New**.
+3. Variable name: `NODE_EXTRA_CA_CERTS`. Variable value: the file's **full path**, e.g. `C:\\certs\\netskope.pem` (no quotes). Click **OK**, then **OK** again.
+4. **Fully quit CoCo Desktop**, including the icon in the system tray (right-click → Quit), then reopen it and open your lab folder again.
+
+Already did this from Surya's email? Skip to the Build below.""", icon=":material/verified_user:")
     st.markdown(f"""
 Everything for dbt happens in the **Project Action Bar** at the **bottom** of the CoCo Desktop window (boxed in red):
 - **Left:** the project, **tricon-coco-lab**
@@ -185,9 +193,8 @@ render_troubleshoot([
     ("It's slow (several minutes)", "30 people are building at once on one warehouse. Wait; the first run is the slowest."),
     ("*self signed certificate in certificate chain* when uploading files",
      "The corporate network (Netskope SSL inspection) is re-signing traffic. SQL still works; only the upload is blocked. "
-     "Fix: get the Netskope root certificate (`.pem`/`.crt`) from the location the facilitator shares, or export it from "
-     "`certmgr.msc` → Trusted Root Certification Authorities → Netskope → Export → Base-64 `.cer`. Then search the Start menu for "
-     "**Edit environment variables for your account**, add `NODE_EXTRA_CA_CERTS` = the file's full path, **fully quit CoCo Desktop** "
+     "You most likely skipped the **certificate setup** box above, or CoCo wasn't fully restarted. Check that `NODE_EXTRA_CA_CERTS` "
+     "points to the **full path** of the `.pem` file Surya sent (no quotes, file actually at that path), **fully quit CoCo Desktop** "
      "(including the tray icon), reopen it and click Build again. Still stuck? Raise your hand."),
 ])
 st.info("**Tip:** run this Build in the first few minutes. If your network blocks it, you'll find out now, not in Module 2.", icon=":material/bolt:")

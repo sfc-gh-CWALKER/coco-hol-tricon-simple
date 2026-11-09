@@ -56,7 +56,7 @@ with st.container(border=True):
 st.markdown("#### Facilitator checklist (before the session)")
 with st.container(border=True):
     st.markdown(f"""
-- [ ] **Do one real Build click on a Tricon-managed laptop, on the corporate network.** Corporate TLS inspection broke file uploads in the dry run; confirm CoCo's in-Snowflake Build still syncs.
+- [ ] **Do one real Build click on a Tricon-managed laptop, on the corporate network.** Corporate TLS inspection (Netskope) breaks file uploads. Surya has sent every participant the Netskope `.pem` and manual steps (set `NODE_EXTRA_CA_CERTS`, then fully restart CoCo Desktop). Confirm at least one person has it working before the session, and keep a copy of the `.pem` handy for anyone who lost the email.
 - [ ] Check the Build run options are set to **dbt Version {DBT_VERSION}**.
 - [ ] Everyone is on **CoCo Desktop 1.21.3 or later** (needed for email-style personal database links in Module 4).
 - [ ] Size **{LAB_WH}** up for the session: about 30 people × 5 builds.
